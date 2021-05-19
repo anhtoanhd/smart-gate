@@ -1,0 +1,172 @@
+$header-background-color: #F6F6F6;
+$mobile-width: 414px;
+@mixin textStyle($fst, $fw, $fs, $lh, $color) {
+    font-style: $fst;
+    font-weight: $fw;
+    font-size: $fs;
+    line-height: $lh;
+    color: $color;
+}
+
+:host {
+    .header {
+        background: $header-background-color;
+        height: 64px;
+        position: fixed;
+        top: 0;
+        left: 204px;
+        right: 0;
+        z-index: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.15);
+
+        @media (max-width: $mobile-width) {
+            left: 0;
+        }
+
+        .header-left {
+            @media (min-width: $mobile-width) {
+                visibility: hidden;
+            }
+
+            @media (max-width: $mobile-width) {
+                visibility: visible;
+                margin-left: 16px;
+            }
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            margin: 0 40px 0 0;
+
+            @media (max-width: $mobile-width) {
+                margin-right: 16px;
+            }
+
+            .header-notification {
+                position: relative;
+                margin: 0 36px 0 0;
+
+                img {
+                    border-radius: 100px;
+                }
+
+                .notification-count {
+                    margin: 0;
+                    padding: 0;
+                    position: absolute;
+                    top: 5px;
+                    right: 0;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    width: 10px;
+                    height: 10px;
+                    background: linear-gradient(18.02deg, #FF625B 21.52%, #FD8A4D 74.41%);
+                    border-radius: 10px;
+                    @include textStyle(normal, normal, 8px, 10px, #FFFFFF);
+                }
+
+                &:hover {
+                    cursor: pointer;
+                }
+            }
+
+            .header-avatar {
+                border-radius: 100px;
+
+                &:hover {
+                    cursor: pointer;
+                }
+
+                img.avatar {
+                    width: 36px;
+                    height: 36px;
+                    border-radius: 20px;
+                }
+            }
+
+            .dropdown-toggle::after {
+                display: none;
+            }
+
+            ul.notification {
+                padding: 18px 6px 0 6px;
+                li {
+                    &.notification-header {
+                        display: flex;
+                        justify-content: center;
+                        margin-bottom: 16px;
+                        @include textStyle(normal, normal, 18px, 22px, #332A7C);
+                    }
+
+                    &.notification-footer {
+                        display: flex;
+                        justify-content: center;
+                        margin: 18px 0;
+                        a {
+                            @include textStyle(normal, normal, 14px, 18px, #332A7C);
+                        }
+                    }
+
+                    &.notification-item {
+                        min-width: 328px;
+                        height: 84px !important;
+                        padding: 12px !important;
+                        background: #F6F6FC;
+
+                        &.read {
+                            background: #FFFFFF;
+                            span {
+                                &.notificaton-title, &.notification-content,  &.notification-time{
+                                    color: #7976B1 !important;
+                                }
+                            }
+                        }
+
+                        &>div {
+                            display: flex;
+                            align-items: center;
+                            width: 100%;
+
+                            .notification-body {
+                                margin-left: 12px;
+                                display: flex;
+                                flex-direction: column;
+
+                                span {
+                                    &.notificaton-title {
+                                        @include textStyle(normal, normal, 12px, 16px, #332A7C);
+                                        text-transform: uppercase;
+                                    }
+
+                                    &.notification-content {
+                                        @include textStyle(normal, normal, 10px, 12px, #332A7C);
+                                        white-space: pre-wrap;
+                                        white-space: -moz-pre-wrap;
+                                        white-space: -o-pre-wrap;
+                                        height: 24px;
+                                        text-overflow: ellipsis;
+                                        overflow: hidden;
+                                        margin-top: 4px;
+                                    }
+
+                                    &.notification-time {
+                                        @include textStyle(normal, normal, 9px, 11px, #FD8A4D);
+                                        display: flex;
+                                        align-items: center;
+                                        margin-top: 5px;
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

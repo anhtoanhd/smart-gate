@@ -1,0 +1,17 @@
+.chart-container {
+    background: #F8F0E6;
+    border-radius: 20px;
+
+    .chart-header {
+        border-bottom: 0.5px solid #BDBDBD;
+        padding: 20px;
+        margin-bottom: 0;
+        span {
+            display: block;
+            background-color: transparent;
+        }
+    }
+    .chart-body {
+        padding: 0 20px 20px 20px;
+    }
+}

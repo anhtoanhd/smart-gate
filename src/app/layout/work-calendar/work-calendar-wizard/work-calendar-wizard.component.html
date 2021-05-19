@@ -1,0 +1,133 @@
+<div class="page-container">
+    <div class="page-header-title text-center text-uppercase m-b-24">
+        <span>{{'Add work calendar'|translate}}</span>
+    </div>
+    <div class="work-box">
+        <div class="step-wrap">
+            <div class="step" [ngClass]="{'step-active': step === 1}">
+                <img src="assets/images/content/ic-locate-white.svg" alt="Locate" *ngIf="step === 1">
+                <img src="assets/images/content/ic-locate-gray.svg" alt="Locate" *ngIf="step !== 1">
+                <label class="m-l-24" [ngClass]="{'text-white': step === 1}">
+                    <span class="text-uppercase">{{'Step'|translate}} 1</span>: {{'Choose location for shift'|translate}}
+                </label>
+            </div>
+            <div class="step" [ngClass]="{'step-active': step === 2}">
+                <img src="assets/images/content/ic-human-white.svg" alt="Human" *ngIf="step === 2">
+                <img src="assets/images/content/ic-human-gray.svg" alt="Human" *ngIf="step !== 2">
+                <label class="m-l-24" [ngClass]="{'text-white': step === 2}">
+                    <span class="text-uppercase">{{'Step'|translate}} 2</span>: {{'Add staff to shift'|translate}}
+                </label>
+            </div>
+        </div>
+        <div class="step-content" *ngIf="step === 1">
+            <h6>{{'Step'|translate}} 1:</h6>
+            <h6 class="text-uppercase">{{'Choose location for shift'|translate}}</h6>
+            <p class="m-t-40" style="width: 390px;">{{'Location'|translate}}</p>
+            <form style="display: flex;flex-direction: column;align-items: center;"
+                  name="form" (ngSubmit)="stepForm.form.valid && onStepFormSubmit()" #stepForm="ngForm">
+                <ng-select class="custom shadow bg-white h-40px" style="width: 390px;"
+                           [items]="locations"
+                           bindLabel="name"
+                           bindValue="id"
+                           placeholder="{{'Choose location'|translate}}"
+                           [clearable]="false"
+                           name="location"
+                           #location="ngModel"
+                           [ngClass]="{'is-invalid': stepForm.submitted && location.invalid}"
+                           [searchable]="false"
+                           notFoundText="{{'No items found'|translate}}"
+                           [(ngModel)]="area_id" required>
+                </ng-select>
+                <div *ngIf="stepForm.submitted && location.invalid" class="invalid-feedback">
+                    <div *ngIf="location.errors.required">{{'Choose location!'|translate}}</div>
+                </div>
+                <g-button type="submit" class="m-t-32" width="390" >{{'Next'|translate}}</g-button>
+            </form>
+        </div>
+        <div class="w-calendar" *ngIf="step === 2">
+            <div class="w-calendar-header">
+                <div class="w-header-right">
+                    <g-button bgColor="#FFFFFF" borderColor="#0E9560" color="#0E9560" width="140" height="32" [hasShadow]="false" (click)="step=1;">{{'Back'|translate}}</g-button>
+                </div>
+                <div class="w-header-left">
+                    <img class="pointer m-r-24" src="assets/images/content/ic-previous.svg" alt="Previous" (click)="onPrevWeekClick()">
+                    <span class="calendar-title">{{commonService.formatDateVn(this.weekDays[0]['date'])}} - {{commonService.formatDateVn(this.weekDays[6]['date'])}}</span>
+                    <img class="pointer m-l-24" src="assets/images/content/ic-next.svg" alt="Next" (click)="onNextWeekClick()">
+                </div>
+                <div class="w-header-right">
+                    <g-button width="140" height="32" routerLink="/work-calendar" [queryParams]="{area: area_id}">{{'Finish'|translate}}</g-button>
+                </div>
+            </div>
+            <div class="w-calendar-content wizard">
+                <div class="content-left">
+                    <table class="calendar-table">
+                        <tr>
+                            <th></th>
+                            <th *ngFor="let weekDay of weekDays">
+                                <div class="c-thead" [ngClass]="{'th-today': today.getTime() === weekDay['date'].getTime()}">
+                                    <span>{{weekDay['date'].getDate()}}</span>
+                                    <span>{{weekDay['weekDay']}}</span>
+                                </div>
+                            </th>
+                        </tr>
+                        <tr *ngFor="let shift of shifts; let i=index;">
+                            <td>
+                                <div>{{shift['name']}}</div>
+                                <div>-</div>
+                                <div>{{shift['time_start'].substr(0, 5)}} - {{shift['time_end'].substr(0, 5)}}</div>
+                            </td>
+                            <td *ngFor="let weekDay of weekDays" [ngClass]="{'none-edit': now.getTime() >= commonService.convertTimeStamp(weekDay['date'], shift['time_start'])}">
+                                <div class="no-staff" [ngClass]="{'hide': now.getTime() >= commonService.convertTimeStamp(weekDay['date'], shift['time_start'])}"
+                                     *ngIf="!data[shift.id] || !data[shift.id][weekDay.sqlDate]?.length"
+                                     (click)="onOpenStaffShiftFormClick(shift, weekDay['date'], true)">
+                                    <img src="assets/images/content/ic-add.svg" alt="Add">
+                                    <span class="add-text">{{'Add staff'|translate}}</span>
+                                </div>
+                                <div class="mobile" (click)="onOpenStaffShiftFormClick(shift, weekDay['date'], true)"
+                                     *ngIf="!data[shift.id] || !data[shift.id][weekDay.sqlDate]?.length"
+                                     [ngClass]="{'hide': now.getTime() >= commonService.convertTimeStamp(weekDay['date'], shift['time_start']) || !shift['is_activated']}">
+                                </div>
+                                <div class="have-staff" *ngIf="data[shift.id] && data[shift.id][weekDay.sqlDate]?.length">
+                                    <div class="list-staff">
+                                        <div class="staff-avatar" *ngFor="let staff of data[shift.id][weekDay.sqlDate]; let i=index;" [ngClass]="{'hidden': i >= 5}">
+                                            <img [lazyLoad]="staff['image_url']" alt="Avatar">
+                                        </div>
+                                    </div>
+                                    <div class="total-staff">
+                                        Tổng: {{data[shift.id][weekDay.sqlDate]?.length}}
+                                    </div>
+                                    <div class="edit-staff"
+                                         (click)="onOpenStaffShiftFormClick(shift, weekDay['date'], false)">
+                                        {{'Edit'|translate}}
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="content-right">
+                    <div class="shift-info">
+                        {{'Shift information'|translate}}
+                    </div>
+                    <div class="shift-info-wrap">
+                        <div class="shift-item" *ngFor="let shift of shifts; let i=index;">
+                            <div class="shift-name">
+                                <div class="before" [style.backgroundColor]="colors[i]"></div>
+                                <div class="before-child" [style.backgroundColor]="colors[i]"></div>
+                                {{shift.name}}
+                            </div>
+                            <div class="shift-i"><span>{{'Time'|translate}}: </span>{{shift.time_start.substr(0, 5)}}-{{shift.time_end.substr(0, 5)}}</div>
+                            <div class="shift-i"><span>{{'Apply location'|translate}}: </span>{{area['name']}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="dialog-loading" [ngStyle]="{'display': isLoading ? 'initial' : 'none'}">
+    <div class="dialog-loading-mask">
+        <mat-spinner></mat-spinner>
+        <p>{{'Loading...'|translate}}</p>
+    </div>
+</div>

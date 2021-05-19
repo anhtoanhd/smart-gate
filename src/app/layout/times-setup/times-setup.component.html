@@ -1,0 +1,289 @@
+<div class="page-container">
+    <div class="page-content p-t-24">
+        <form name="form" (ngSubmit)="f.form.valid && onFormSubmit()" #f="ngForm" >
+            <div class="d-flex flex-end">
+                <g-button type="submit" [disabled]="timeError || !workTimes.length || !checkValid">{{'Save change'|translate}}</g-button>
+            </div>
+            <div class="time-setup--section__header new">
+                <div class="header-left">
+                    <div class="header-img">
+                        <img src="assets/images/content/calendar-1.svg" alt="Calendar">
+                    </div>
+                    <span class="divider"></span>
+                    <span class="header-title">{{'Set up back office working time'|translate}}</span>
+                </div>
+            </div>
+            <div class="time-setup--section m-t-16 p-0">
+                <div class="time-setup--section__content new">
+                    <table class="time-setup">
+                        <tr>
+                            <th>Ca</th>
+                            <th>Thứ 2</th>
+                            <th>Thứ 3</th>
+                            <th>Thứ 4</th>
+                            <th>Thứ 5</th>
+                            <th>Thứ 6</th>
+                            <th>Thứ 7</th>
+                            <th>Chủ nhật</th>
+                        </tr>
+                        <ng-container  *ngFor="let wt of workTimes; let i = index;">
+                            <tr>
+                                <td>
+                                    {{wt['name']}}
+                                </td>
+                                <td>
+                                    <div>
+                                        <span>Từ</span>
+                                        <ngb-timepicker [(ngModel)]="wt['wday']['1'].start_at" [spinners]="false" id="start-{{i}}-1" name="start-{{i}}-1" [size]="'small'"
+                                                        [disabled]="!wt['wday']['1']['enable']['start']" (change)="onStartTimeChange(i, 1, $event)"
+                                                        [ngClass]="{'is-invalid' : wt['wday']['1']['err']['start']}">
+                                        </ngb-timepicker>
+                                    </div>
+                                    <div>
+                                        <span>Đến</span>
+                                        <ngb-timepicker [(ngModel)]="wt['wday']['1'].end_at" [spinners]="false" id="end-{{i}}-1" name="end-{{i}}-1" [size]="'small'"
+                                                        [disabled]="!wt['wday']['1']['enable']['end']" (change)="onEndTimeChange(i, 1, $event)"
+                                                        [ngClass]="{'is-invalid' : wt['wday']['1']['err']['end']}">
+                                        </ngb-timepicker>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <span>Từ</span>
+                                        <ngb-timepicker [(ngModel)]="wt['wday']['2'].start_at" [spinners]="false" id="start-{{i}}-2" name="start-{{i}}-2" [size]="'small'"
+                                                        [disabled]="!wt['wday']['2']['enable']['start']" (change)="onStartTimeChange(i, 2, $event)"
+                                                        [ngClass]="{'is-invalid' : wt['wday']['2']['err']['start']}">
+                                        </ngb-timepicker>
+                                    </div>
+                                    <div>
+                                        <span>Đến</span>
+                                        <ngb-timepicker [(ngModel)]="wt['wday']['2'].end_at" [spinners]="false" id="end-{{i}}-2" name="end-{{i}}-2" [size]="'small'"
+                                                        [disabled]="!wt['wday']['2']['enable']['end']" (change)="onEndTimeChange(i, 2, $event)"
+                                                        [ngClass]="{'is-invalid' : wt['wday']['2']['err']['end']}">
+                                        </ngb-timepicker>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <span>Từ</span>
+                                        <ngb-timepicker [(ngModel)]="wt['wday']['3'].start_at" [spinners]="false" id="start-{{i}}-3" name="start-{{i}}-3" [size]="'small'"
+                                                        [disabled]="!wt['wday']['3']['enable']['start']" (change)="onStartTimeChange(i, 3, $event)"
+                                                        [ngClass]="{'is-invalid' : wt['wday']['3']['err']['start']}">
+                                        </ngb-timepicker>
+                                    </div>
+                                    <div>
+                                        <span>Đến</span>
+                                        <ngb-timepicker [(ngModel)]="wt['wday']['3'].end_at" [spinners]="false" id="end-{{i}}-3" name="end-{{i}}-3" [size]="'small'"
+                                                        [disabled]="!wt['wday']['3']['enable']['end']" (change)="onEndTimeChange(i, 3, $event)"
+                                                        [ngClass]="{'is-invalid' : wt['wday']['3']['err']['end']}">
+                                        </ngb-timepicker>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <span>Từ</span>
+                                        <ngb-timepicker [(ngModel)]="wt['wday']['4'].start_at" [spinners]="false" id="start-{{i}}-4" name="start-{{i}}-4" [size]="'small'"
+                                                        [disabled]="!wt['wday']['4']['enable']['start']" (change)="onStartTimeChange(i, 4, $event)"
+                                                        [ngClass]="{'is-invalid' : wt['wday']['4']['err']['start']}">
+                                        </ngb-timepicker>
+                                    </div>
+                                    <div>
+                                        <span>Đến</span>
+                                        <ngb-timepicker [(ngModel)]="wt['wday']['4'].end_at" [spinners]="false" id="end-{{i}}-4" name="end-{{i}}-4" [size]="'small'"
+                                                        [disabled]="!wt['wday']['4']['enable']['end']" (change)="onEndTimeChange(i, 4, $event)"
+                                                        [ngClass]="{'is-invalid' : wt['wday']['4']['err']['end']}">
+                                        </ngb-timepicker>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <span>Từ</span>
+                                        <ngb-timepicker [(ngModel)]="wt['wday']['5'].start_at" [spinners]="false" id="start-{{i}}-5" name="start-{{i}}-5" [size]="'small'"
+                                                        [disabled]="!wt['wday']['5']['enable']['start']" (change)="onStartTimeChange(i, 5, $event)"
+                                                        [ngClass]="{'is-invalid' : wt['wday']['5']['err']['start']}">
+                                        </ngb-timepicker>
+                                    </div>
+                                    <div>
+                                        <span>Đến</span>
+                                        <ngb-timepicker [(ngModel)]="wt['wday']['5'].end_at" [spinners]="false" id="end-{{i}}-5" name="end-{{i}}-5" [size]="'small'"
+                                                        [disabled]="!wt['wday']['5']['enable']['end']" (change)="onEndTimeChange(i, 5, $event)"
+                                                        [ngClass]="{'is-invalid' : wt['wday']['5']['err']['end']}">
+                                        </ngb-timepicker>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <span>Từ</span>
+                                        <ngb-timepicker [(ngModel)]="wt['wday']['6'].start_at" [spinners]="false" id="start-{{i}}-6" name="start-{{i}}-6" [size]="'small'"
+                                                        [disabled]="!wt['wday']['6']['enable']['start']" (change)="onStartTimeChange(i, 6, $event)"
+                                                        [ngClass]="{'is-invalid' : wt['wday']['6']['err']['start']}">
+                                        </ngb-timepicker>
+                                    </div>
+                                    <div>
+                                        <span>Đến</span>
+                                        <ngb-timepicker [(ngModel)]="wt['wday']['6'].end_at" [spinners]="false" id="end-{{i}}-6" name="end-{{i}}-6" [size]="'small'"
+                                                        [disabled]="!wt['wday']['6']['enable']['end']" (change)="onEndTimeChange(i, 6, $event)"
+                                                        [ngClass]="{'is-invalid' : wt['wday']['6']['err']['end']}">
+                                        </ngb-timepicker>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <span>Từ</span>
+                                        <ngb-timepicker [(ngModel)]="wt['wday']['0'].start_at" [spinners]="false" id="start-{{i}}-0" name="start-{{i}}-0" [size]="'small'"
+                                                        [disabled]="!wt['wday']['0']['enable']['start']" (change)="onStartTimeChange(i, 0, $event)"
+                                                        [ngClass]="{'is-invalid' : wt['wday']['0']['err']['start']}">
+                                        </ngb-timepicker>
+                                    </div>
+                                    <div>
+                                        <span>Đến</span>
+                                        <ngb-timepicker [(ngModel)]="wt['wday']['0'].end_at" [spinners]="false" id="end-{{i}}-0" name="end-{{i}}-0" [size]="'small'"
+                                                        [disabled]="!wt['wday']['0']['enable']['end']" (change)="onEndTimeChange(i, 0, $event)"
+                                                        [ngClass]="{'is-invalid' : wt['wday']['0']['err']['end']}">
+                                        </ngb-timepicker>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr *ngIf="(wt['err']?.length)" class="border-bottom-none">
+                                <td [colSpan]="9">
+                                    <div class="invalid-feedback" *ngFor="let error of wt['err']">{{error}}</div>
+                                </td>
+                            </tr>
+                        </ng-container>
+                    </table>
+                </div>
+            </div>
+
+            <div class="time-setup--section__header new m-t-40">
+                <div class="header-left">
+                    <div class="header-img">
+                        <img src="assets/images/content/calendar-2.svg" alt="Calendar">
+                    </div>
+                    <span class="divider"></span>
+                    <span class="header-title">{{'Advance option'|translate}}</span>
+                </div>
+            </div>
+            <div class="time-setup--section m-t-16">
+                <div class="time-setup--section__content new">
+                    <div class="time-item flex-start">
+                        <label class="checkbox w-35">
+                            <input type="checkbox" [(ngModel)]="checkin.isChecked" name="check-in"/>
+                            <img src="assets/images/content/checkbox-unchecked.svg" class="unchecked">
+                            <img src="assets/images/content/checkbox-checked.svg" class="checked">
+                            {{'Check-in time at work'|translate}}
+                        </label>
+                        <div class="item-input m-l-24">
+                            <span class="item-label">{{'Before'|translate}}</span>
+                            <div>
+                                <input type="text" class="custom-input small-input" [(ngModel)]="checkin.before" name="check-in-before"
+                                       #checkInBefore="ngModel" [disabled]="!checkin.isChecked" positiveInteger
+                                       (input)="onAdvanceInput('checkin_before')"
+                                       [ngClass]="{'is-invalid': f.submitted && (checkInBefore.invalid || resErrors['checkin_before']?.length)}">
+                                <span class="minute">{{'minute'|translate}}</span>
+                            </div>
+                        </div>
+                        <div class="item-input m-l-24">
+                            <span class="item-label">{{'After'|translate}}</span>
+                            <div>
+                                <input type="text" class="custom-input small-input" [(ngModel)]="checkin.after" name="check-in-after"
+                                       #checkInAfter="ngModel" [disabled]="!checkin.isChecked" positiveInteger
+                                       (input)="onAdvanceInput('checkin_after')"
+                                       [ngClass]="{'is-invalid': f.submitted && (checkInAfter.invalid || resErrors['checkin_after']?.length)}">
+                                <span class="minute">{{'minute'|translate}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex" *ngIf="resErrors['checkin_before']?.length || resErrors['checkin_after']?.length">
+                        <div class="invalid-feedback d-flex flex-center" *ngFor="let err of resErrors['checkin_before']">
+                            {{err}}
+                        </div>
+                        <div class="invalid-feedback d-flex flex-center" *ngFor="let err of resErrors['checkin_after']">
+                            {{err}}
+                        </div>
+                    </div>
+                    <div class="time-item flex-start">
+                        <label class="checkbox w-35">
+                            <input type="checkbox" [(ngModel)]="checkout.isChecked" name="check-out"/>
+                            <img src="assets/images/content/checkbox-unchecked.svg" class="unchecked">
+                            <img src="assets/images/content/checkbox-checked.svg" class="checked">
+                            {{'Check out time to check-out'|translate}}
+                        </label>
+                        <div class="item-input m-l-24">
+                            <span class="item-label">{{'Before'|translate}}</span>
+                            <div>
+                                <input type="text" class="custom-input small-input" [(ngModel)]="checkout.before" name="check-out-before"
+                                       #checkOutBefore="ngModel" [disabled]="!checkout.isChecked" positiveInteger
+                                       (input)="onAdvanceInput('checkout_before')"
+                                       [ngClass]="{'is-invalid': f.submitted && (checkOutBefore.invalid || resErrors['checkout_before']?.length)}">
+                                <span class="minute">{{'minute'|translate}}</span>
+                            </div>
+                        </div>
+                        <div class="item-input m-l-24">
+                            <span class="item-label">{{'After'|translate}}</span>
+                            <div>
+                                <input type="text" class="custom-input small-input" [(ngModel)]="checkout.after" name="check-out-after"
+                                       #checkOutAfter="ngModel" [disabled]="!checkout.isChecked" positiveInteger
+                                       (input)="onAdvanceInput('checkout_after')"
+                                       [ngClass]="{'is-invalid': f.submitted && (checkOutAfter.invalid || resErrors['checkout_after']?.length)}">
+                                <span class="minute">{{'minute'|translate}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex" *ngIf="resErrors['checkout_before']?.length || resErrors['checkout_after']?.length">
+                        <div class="invalid-feedback d-flex flex-center" *ngFor="let err of resErrors['checkout_before']">
+                            {{err}}
+                        </div>
+                        <div class="invalid-feedback d-flex flex-center" *ngFor="let err of resErrors['checkout_after']">
+                            {{err}}
+                        </div>
+                    </div>
+                    <div class="time-item flex-start">
+                        <label class="checkbox w-35">
+                            <input type="checkbox" [(ngModel)]="allow.isChecked" name="allow"/>
+                            <img src="assets/images/content/checkbox-unchecked.svg" class="unchecked">
+                            <img src="assets/images/content/checkbox-checked.svg" class="checked">
+                            {{'Lets go home early'|translate}}
+                        </label>
+                        <div class="item-input m-l-24">
+                            <span class="item-label">{{'Late'|translate}}</span>
+                            <div>
+                                <input type="text" class="custom-input small-input" [(ngModel)]="allow.late" name="allow-late"
+                                       #allowLate="ngModel" [disabled]="!allow.isChecked" positiveInteger
+                                       (input)="onAdvanceInput('allow_late')"
+                                       [ngClass]="{'is-invalid': f.submitted && (allowLate.invalid || resErrors['allow_late']?.length)}">
+                                <span class="minute">{{'minute'|translate}}</span>
+                            </div>
+                        </div>
+                        <div class="item-input m-l-24">
+                            <span class="item-label">{{'Early'|translate}}</span>
+                            <div>
+                                <input type="text" class="custom-input small-input" [(ngModel)]="allow.early" name="allow-early"
+                                       #allowEarly="ngModel" [disabled]="!allow.isChecked" positiveInteger
+                                       (input)="onAdvanceInput('allow_early')"
+                                       [ngClass]="{'is-invalid': f.submitted && (allowEarly.invalid || resErrors['allow_early']?.length)}">
+                                <span class="minute">{{'minute'|translate}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex" *ngIf="resErrors['allow_late']?.length || resErrors['allow_early']?.length">
+                        <div class="invalid-feedback d-flex flex-center" *ngFor="let err of resErrors['allow_late']">
+                            {{err}}
+                        </div>
+                        <div class="invalid-feedback d-flex flex-center" *ngFor="let err of resErrors['allow_early']">
+                            {{err}}
+                        </div>
+                    </div>
+                    <div *ngIf="f.submitted && (checkInBefore.invalid || checkInAfter.invalid || checkOutBefore.invalid || checkOutAfter.invalid || allowEarly.invalid || allowLate.invalid)" class="invalid-feedback d-flex flex-center">
+                        <div>{{'Enter positive integer!'|translate}}</div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="dialog-loading" [ngStyle]="{'display': isLoading ? 'initial' : 'none'}">
+    <div class="dialog-loading-mask">
+        <mat-spinner></mat-spinner>
+        <p>{{'Loading...'|translate}}</p>
+    </div>
+</div>

@@ -1,0 +1,66 @@
+<div class="md-wrapper">
+    <div class="md-content">
+        <form name="form" (ngSubmit)="form.form.valid && onFormSubmit()" #form="ngForm"
+              novalidate>
+            <div class="md-header">
+                {{'Office type'|translate}}
+            </div>
+            <div class="md-body">
+                <div class="custom-input-group">
+                    <label class="label-form">{{'Which office block does the employee belong to?'|translate}}<span class="red-txt">*</span></label>
+                    <div class="d-flex space-between" style="height: 100%;">
+                        <label class="radio">
+                            <input type="radio" name="block" value="back_office" [(ngModel)]="officeType" [checked]="officeType==='back_office'"/>
+                            <img src="assets/images/content/radio-unchecked.svg" class="unchecked">
+                            <img src="assets/images/content/radio-checked.svg" class="checked">
+                            {{'Backoffice block'|translate}}
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="block" value="shift_office" [(ngModel)]="officeType"
+                                   (change)="onOfficeChange($event)" [checked]="officeType==='shift_office'"/>
+                            <img src="assets/images/content/radio-unchecked.svg" class="unchecked">
+                            <img src="assets/images/content/radio-checked.svg" class="checked">
+                            {{'Shift block'|translate}}
+                        </label>
+                    </div>
+                </div>
+                <div class="custom-input-group m-t-16">
+                    <label class="label-form" [ngClass]="{'disabled' : officeType!=='back_office'}">
+                        {{'Shift'|translate}}<span class="red-txt" *ngIf="officeType==='back_office'">*</span>
+                    </label>
+                    <ng-select
+                        class="custom time-picker"
+                        name="shifts" #shift="ngModel"
+                        placeholder="{{'Shift'|translate}}"
+                        [disabled]="officeType!=='back_office'"
+                        [clearable]="false"
+                        [searchable]="false"
+                        [items]="shifts"
+                        [multiple]="true"
+                        bindLabel="name"
+                        bindValue="id"
+                        [selectableGroup]="true"
+                        [closeOnSelect]="false"
+                        [required]="officeType==='back_office'"
+                        [ngClass]="{ 'is-invalid': form.submitted && (shift.invalid || resErrors['work_time_ranges_id']?.length) }"
+                        [(ngModel)]="listSelectedShift"
+                        notFoundText="{{'No items found'|translate}}">
+                        <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
+                            {{item.name}}<input type="checkbox" id="item-{{index}}" name="item-{{index}}" [ngModel]="item$.selected"/>
+                        </ng-template>
+                    </ng-select>
+                    <div *ngIf="form.submitted && shift.invalid" class="invalid-feedback">
+                        <div *ngIf="shift.errors.required">{{'This field is required'|translate}}</div>
+                    </div>
+                    <div *ngIf="resErrors['work_time_ranges_id']?.length" class="invalid-feedback">
+                        <div *ngFor="let err of resErrors['work_time_ranges_id']">{{err}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="md-footer flex-center">
+                <g-button bgColor="#FF9C68" borderColor="#FF9C68" (click)="onCancelClick()">{{'Cancel'|translate}}</g-button>
+                <g-button type="submit" class="m-l-12">{{'Save'|translate}}</g-button>
+            </div>
+        </form>
+    </div>
+</div>

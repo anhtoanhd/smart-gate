@@ -1,0 +1,30 @@
+<div class="confirm-wrapper">
+    <img src="assets/images/content/ic-remove.svg" alt="Close" class="close" (click)="onCloseDialog(false)" *ngIf="!autoClose && (type==='success' || type==='error')">
+    <div class="confirm-header">
+        <img src="assets/images/content/img-confirm-dialog.svg" alt="Confirm delete" *ngIf="type==='delete'">
+        <img src="assets/images/content/img-confirm-dialog-modify.png" alt="Confirm delete" *ngIf="type==='modify'">
+        <img src="assets/images/content/img-confirm-dialog-success.png" alt="Confirm delete" *ngIf="type==='success'">
+        <img src="assets/images/content/img-confirm-dialog-error.png" alt="Confirm delete" *ngIf="type==='error'">
+        <div class="confirm-title">
+            {{title|translate}}</div>
+    </div>
+    <ng-container *ngIf="type==='delete'">
+        <div class="confirm-content" *ngIf="notification">
+            <span class="red-txt">{{'Warning'|translate}}: &nbsp;</span>
+            <span>{{notification|translate}}</span>
+        </div>
+        <div class="confirm-note" *ngIf="note">
+            <span class="green-txt">{{'Note'|translate}}: &nbsp;</span>
+            <span>{{note|translate}}</span>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="type==='modify'">
+        <div class="text-center m-t-12">
+            {{'Do you want to perform this action?'|translate}}
+        </div>
+    </ng-container>
+    <div class="confirm-footer" *ngIf="type==='delete' || type==='modify'">
+        <g-button class="m-r-12" width="120" bgColor="#FF9C68" borderColor="#FF9C68" (click)="onCloseDialog(false)">{{'Cancel'|translate}}</g-button>
+        <g-button class="m-l-12" width="120" bgColor="#0E9560" borderColor="#0E9560" (click)="onCloseDialog(true)">{{type==='delete' ? ('Delete'|translate) : ('Ok'|translate)}}</g-button>
+    </div>
+</div>

@@ -1,0 +1,468 @@
+<div class="page-container">
+    <div class="page-head">
+        <g-search
+            placeholder="{{'Enter staff name or code'|translate}}"
+            (searchInputChange)="onSearchInputChange($event)">
+        </g-search>
+        <div class="page-filter">
+            <div class="d-flex flex-start">
+                <div class="page-filter-group">
+                    <div class="page-filter-title">{{'Department'|translate}}</div>
+                    <div class="btn-group" dropdown [insideClick]="true">
+                        <span class="caret bg-text"
+                              dropdownToggle>{{filter['departments']?.length ? commonService.joinField(filter['departments'], 'name') : 'Tất cả'}}</span>
+                        <div *dropdownMenu class="dropdown-menu" style="padding: 0;" role="menu">
+                            <div class="filter-group-container">
+                                <div class="search-box m-b-16">
+                                    <span class="search-icon"></span>
+                                    <span class="vertical-divider"></span>
+                                    <input type="text" class="search-input" placeholder="{{'Enter keyword'|translate}}"
+                                           (keyup)="onDepartmentSearch($event)">
+                                </div>
+                                <div class="wrap">
+                                    <label class="checkbox space-between" *ngFor="let department of listDepartment">
+                                        <span>{{department.name}}</span>
+                                        <input type="checkbox" [checked]="department.isChecked"
+                                               (change)="onDepartmentChange($event, department)"/>
+                                        <img src="assets/images/content/checkbox-unchecked.svg" class="unchecked">
+                                        <img src="assets/images/content/checkbox-checked.svg" class="checked">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="page-filter-group m-l-32">
+                    <div class="page-filter-title">{{'Location'|translate}}</div>
+                    <div class="btn-group" dropdown [insideClick]="true">
+                        <span class="caret bg-text"
+                              dropdownToggle>{{filter['areas']?.length ? commonService.joinField(filter['areas'], 'name') : 'Tất cả'}}</span>
+                        <div *dropdownMenu class="dropdown-menu" style="padding: 0;" role="menu">
+                            <div class="filter-group-container">
+                                <div class="search-box m-b-16">
+                                    <span class="search-icon"></span>
+                                    <span class="vertical-divider"></span>
+                                    <input type="text" class="search-input" placeholder="{{'Enter keyword'|translate}}"
+                                           (keyup)="onLocationSearch($event)">
+                                </div>
+                                <div class="wrap">
+                                    <label class="checkbox space-between" *ngFor="let area of listLocation">
+                                        <span>{{area.name}}</span>
+                                        <input type="checkbox" [checked]="area.isChecked"
+                                               (change)="onLocationChange($event, area)"/>
+                                        <img src="assets/images/content/checkbox-unchecked.svg" class="unchecked">
+                                        <img src="assets/images/content/checkbox-checked.svg" class="checked">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="page-filter-group m-l-32">
+                    <div class="page-filter-title">{{'Attendance time range'|translate}}</div>
+                    <div class="btn-group" dropdown [insideClick]="true">
+                        <span class="caret bg-text"
+                              dropdownToggle>{{filter['date_range']?.length ? commonService.joinField(filter['date_range'], null, ' - ') : 'Tất cả'}}</span>
+                        <div *dropdownMenu class="dropdown-menu" style="padding: 0;" role="menu">
+                            <div class="filter-group-container date-range" style="padding-top: 0;">
+                                <bs-daterangepicker-inline
+                                    [bsValue]="filter['date_range']"
+                                    (bsValueChange)="onChooseDateRange($event)"
+                                    [bsConfig]="bsConfig">
+                                </bs-daterangepicker-inline>
+                                <div class="d-flex flex-end m-t-16">
+                                    <span style="color: #2FA8DD; text-decoration: underline; cursor: pointer;"
+                                          (click)="onClearDateRangeClick()" *ngIf="filter['date_range']">Reset</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="page-filter-group m-l-32">
+                    <div class="page-filter-title">{{'Office type'|translate}}</div>
+                    <div class="btn-group" dropdown [insideClick]="true">
+                        <span class="caret bg-text"
+                              dropdownToggle>{{filter['office'] ? filter['office'].name : 'Tất cả'}}</span>
+                        <div *dropdownMenu class="dropdown-menu" style="padding: 0;" role="menu">
+                            <div class="filter-group-container">
+                                <div class="wrap">
+                                    <label class="checkbox space-between" *ngFor="let office of listOffice">
+                                        <span>{{office.name}}</span>
+                                        <input type="radio" [checked]="office.isChecked"
+                                               (change)="onOfficeChange($event, office)"/>
+                                        <img src="assets/images/content/radio-unchecked.svg" class="unchecked">
+                                        <img src="assets/images/content/radio-checked.svg" class="checked">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <span class="reset" (click)="onResetFilterClick()">Reset</span>
+        </div>
+    </div>
+    <div class="page-content">
+        <div class="d-flex space-between m-t-12">
+            <div class="tab-left">
+                <label class="tab-item" [(ngModel)]="tabType" btnRadio="-1" tabindex="0"
+                       role="button" (click)="onTabChange('-1')">{{'General'|translate}}</label>
+                <label class="tab-item" [(ngModel)]="tabType" btnRadio="1" tabindex="0"
+                       role="button" (click)="onTabChange('1')">{{'Present'|translate}}</label>
+                <label class="tab-item" [(ngModel)]="tabType" btnRadio="2" tabindex="0"
+                       role="button" (click)="onTabChange('2')">{{'On time'|translate}}</label>
+                <label class="tab-item" [(ngModel)]="tabType" btnRadio="3" tabindex="0"
+                       role="button" (click)="onTabChange('3')">{{'Late'|translate}}</label>
+                <label class="tab-item" [(ngModel)]="tabType" btnRadio="4" tabindex="0"
+                       role="button" (click)="onTabChange('4')">{{'Absent'|translate}}</label>
+            </div>
+            <div class="tab-right">
+                <span class="btn-span hr-tab-item export" (click)="onExportClick()">{{'Export'|translate}}</span>
+                <div class="btn-group hr-tab-item" dropdown [insideClick]="true" [(isOpen)]="isOpenFormDropdown"
+                     placement="bottom right">
+                    <span dropdownToggle class="btn-span dropdown-toggle create-form"
+                          (click)="onFormClick()">
+                        {{'Create form'|translate}}<span class="caret"></span>
+                    </span>
+                    <div *dropdownMenu class="dropdown-menu dropdown-menu-right" style="min-width: 300px; padding: 0;"
+                         role="menu">
+                        <div class="report-form--dropdown">
+                            <div class="report-form--item">
+                                <span class="report-form--title">{{'Default reports form'|translate}}</span>
+                                <label class="report-item" [(ngModel)]="reportType" btnRadio="{{rp.id}}" tabindex="0"
+                                       role="button" *ngFor="let rp of defaultReports">{{rp.name}}</label>
+
+
+                                <span class="report-form--title">{{'Custom reports form'|translate}}</span>
+                                <div class="report-form-w">
+                                    <label class="report-item" [(ngModel)]="reportType" btnRadio="{{rp.id}}"
+                                           tabindex="0"
+                                           role="button" *ngFor="let rp of newReports">{{rp.name}}</label>
+                                </div>
+                            </div>
+                            <div class="report-form--button">
+                                <g-button width="200" bgColor="#0E9560" borderColor="#0E9560"
+                                          (click)="onFormSaveClick(template)">{{'Save my report form'|translate}}</g-button>
+                                <g-button class="m-t-16" width="200" bgColor="#FF9C68" borderColor="#FF9C68"
+                                          (click)="onFormApplyClick()">{{'Apply'|translate}}</g-button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="btn-group hr-tab-item" dropdown [insideClick]="true" [autoClose]="false"
+                     [(isOpen)]="isOpenColumnDropdown" placement="bottom right">
+                    <span dropdownToggle class="btn-span dropdown-toggle add-column"
+                          (click)="onColumnClick()">
+                        {{'Add column'|translate}}<span class="caret"></span>
+                    </span>
+                    <div *dropdownMenu class="dropdown-menu dropdown-menu-right" style="min-width: 450px; padding: 0;"
+                         role="menu">
+                        <div class="custom-report--dropdown">
+                            <div class="custom-report--left">
+                                <p class="note">{{'Note: Drag and drop or remove columns you want in right side'|translate}}</p>
+                                <div #haveList="cdkDropList"
+                                     class="box-list"
+                                     cdkDropList
+                                     cdkDropListOrientation="vertical"
+                                     [cdkDropListData]="haveColumns"
+                                     [cdkDropListConnectedTo]="[needList]"
+                                     (cdkDropListDropped)="drop($event)">
+                                    <div class="left-drag--item" *ngFor="let column of haveColumns" cdkDrag>
+                                        <img src="assets/images/content/ic-add.svg" alt="Add"
+                                             (click)="onAddColumnClick(column)">
+                                        <span class="m-l-24">{{column.value}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="custom-report--right__wrap">
+                                <div class="custom-report--right">
+                                    <div class="custom-report--title">{{'Report columns'|translate}}</div>
+                                    <div class="custom-report--right__content">
+                                        <p class="default-title">{{'Default information'|translate}}</p>
+                                        <p class="lock">Mã nhân viên</p>
+                                        <p class="lock">Họ tên</p>
+                                        <p class="default-title">{{'Change information'|translate}}</p>
+                                        <div #needList="cdkDropList"
+                                             class="box-list"
+                                             cdkDropList
+                                             cdkDropListOrientation="vertical"
+                                             [cdkDropListData]="needColumns"
+                                             [cdkDropListConnectedTo]="[haveList]"
+                                             (cdkDropListDropped)="drop($event)">
+                                            <div class="right-drag--item" *ngFor="let column of needColumns" cdkDrag>
+                                                <div class="d-flex space-between">
+                                                    <span class="move">{{column.value}}</span>
+                                                    <img src="assets/images/content/ic-remove.svg" alt="Remove"
+                                                         (click)="onRemoveClick(column)">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="custom-report--right__footer">
+                                        <label class="checkbox">
+                                            <input type="checkbox" [(ngModel)]="save_column"/>
+                                            <img src="assets/images/content/checkbox-unchecked.svg"
+                                                 class="unchecked">
+                                            <img src="assets/images/content/checkbox-checked.svg" class="checked">
+                                            {{'Save arrange column'|translate}}
+                                        </label>
+                                        <div class="d-flex space-between m-t-16">
+                                            <g-button width="180" bgColor="#FF9C68" borderColor="#FF9C68"
+                                                      (click)="onColumnCancelClick()">{{'Cancel'|translate}}</g-button>
+                                            <g-button class="m-l-12" width="180" bgColor="#0E9560" borderColor="#0E9560"
+                                                      (click)="onColumnApplyClick()">{{'Apply'|translate}}</g-button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="table-container hr-report">
+            <table class="custom-table tr-pointer" *ngIf="tabType === '-1'">
+                <tr>
+                    <th>{{'No.'|translate}}</th>
+                    <th>{{'Staff ID'|translate}}</th>
+                    <th>
+                        {{'Fullname'|translate}}
+                        <img class="pointer ml-1" src="assets/images/content/ic-sort.svg" alt="Sort"
+                             *ngIf="!sort['user_name'] || sort['user_name']===''"
+                             (click)="onSortClick('user_name', 'asc')">
+                        <img class="pointer ml-1" src="assets/images/content/ic-sort-asc.svg" alt="Sort"
+                             *ngIf="sort['user_name']==='asc'" (click)="onSortClick('user_name', 'desc')">
+                        <img class="pointer ml-1" src="assets/images/content/ic-sort-desc.svg" alt="Sort"
+                             *ngIf="sort['user_name']==='desc'" (click)="onSortClick('user_name', '')">
+                    </th>
+                    <th>{{'Office type'|translate}}</th>
+                    <th>{{'Shift'|translate}}</th>
+                    <th *ngFor="let column of needColumnTemps">
+                        {{column.value}}
+                        <ng-container
+                            *ngIf="column['field_name']==='department_name' || column['field_name']==='area_name'">
+                            <img class="pointer ml-1" src="assets/images/content/ic-sort.svg" alt="Sort"
+                                 *ngIf="!sort[column.field_name] || sort[column.field_name]===''"
+                                 (click)="onSortClick(column.field_name, 'asc')">
+                            <img class="pointer ml-1" src="assets/images/content/ic-sort-asc.svg" alt="Sort"
+                                 *ngIf="sort[column.field_name]==='asc'"
+                                 (click)="onSortClick(column.field_name, 'desc')">
+                            <img class="pointer ml-1" src="assets/images/content/ic-sort-desc.svg" alt="Sort"
+                                 *ngIf="sort[column.field_name]==='desc'" (click)="onSortClick(column.field_name, '')">
+                        </ng-container>
+                    </th>
+                    <th>{{'Status'|translate}}</th>
+                </tr>
+                <tr *ngFor="let staff of listStaff; let i=index;">
+                    <td>{{itemPerPage * (currentPage - 1) + i + 1}}</td>
+                    <td>{{staff.id_number}}</td>
+                    <td>{{staff.user_name}}</td>
+                    <td>{{filter['office'].name}}</td>
+                    <td>{{staff.workTimeRanges_name}}</td>
+                    <td *ngFor="let column of needColumnTemps">{{commonService.formatTimeVn(staff[column.field_name])}}</td>
+                    <td>
+                        <p>{{'Number of present'|translate}}: {{staff.user_on}}</p>
+                        <p>{{'Number of late'|translate}}: {{staff.user_late}}</p>
+                        <p>{{'Number on time'|translate}}: {{staff.user_this_time}}</p>
+                        <p>{{'Number of absent'|translate}}: {{staff.user_not}}</p>
+                    </td>
+                </tr>
+                <tr *ngIf="!listStaff.length">
+                    <td [colSpan]="16" class="text-center">
+                        {{'No data'|translate}}
+                    </td>
+                </tr>
+            </table>
+            <table class="custom-table tr-pointer" *ngIf="tabType === '1'">
+                <tr>
+                    <th>{{'No.'|translate}}</th>
+                    <th>{{'Date'|translate}}</th>
+                    <th>{{'Staff ID'|translate}}</th>
+                    <th>
+                        {{'Fullname'|translate}}
+                        <img class="pointer ml-1" src="assets/images/content/ic-sort.svg" alt="Sort"
+                             *ngIf="!sort['user_name'] || sort['user_name']===''"
+                             (click)="onSortClick('user_name', 'asc')">
+                        <img class="pointer ml-1" src="assets/images/content/ic-sort-asc.svg" alt="Sort"
+                             *ngIf="sort['user_name']==='asc'" (click)="onSortClick('user_name', 'desc')">
+                        <img class="pointer ml-1" src="assets/images/content/ic-sort-desc.svg" alt="Sort"
+                             *ngIf="sort['user_name']==='desc'" (click)="onSortClick('user_name', '')">
+                    </th>
+                    <th>{{'Office type'|translate}}</th>
+                    <th>{{'Shift'|translate}}</th>
+                    <th *ngFor="let column of needColumnTemps">
+                        {{column.value}}
+                        <ng-container
+                            *ngIf="column['field_name']==='department_name' || column['field_name']==='area_name'">
+                            <img class="pointer ml-1" src="assets/images/content/ic-sort.svg" alt="Sort"
+                                 *ngIf="!sort[column.field_name] || sort[column.field_name]===''"
+                                 (click)="onSortClick(column.field_name, 'asc')">
+                            <img class="pointer ml-1" src="assets/images/content/ic-sort-asc.svg" alt="Sort"
+                                 *ngIf="sort[column.field_name]==='asc'"
+                                 (click)="onSortClick(column.field_name, 'desc')">
+                            <img class="pointer ml-1" src="assets/images/content/ic-sort-desc.svg" alt="Sort"
+                                 *ngIf="sort[column.field_name]==='desc'" (click)="onSortClick(column.field_name, '')">
+                        </ng-container>
+                    </th>
+                    <th>{{'Status'|translate}}</th>
+                </tr>
+                <tr *ngFor="let staff of listStaff; let i=index;">
+                    <td>{{itemPerPage * (currentPage - 1) + i + 1}}</td>
+                    <td>{{commonService.formatDateVn(staff.date_at)}}</td>
+                    <td>{{staff.id_number}}</td>
+                    <td>{{staff.user_name}}</td>
+                    <td>{{filter['office'].name}}</td>
+                    <td>{{staff.workTimeRanges_name}}</td>
+                    <td *ngFor="let column of needColumnTemps">{{commonService.formatTimeVn(staff[column.field_name])}}</td>
+                    <td>{{staff.day_status === 0 ? 'Vắng mặt' : (staff.day_status === 1 ? 'Đến sớm' : (staff.day_status === 2 ? 'Đến sớm' : 'Đi trễ'))}}</td>
+                </tr>
+                <tr *ngIf="!listStaff.length">
+                    <td [colSpan]="16" class="text-center">
+                        {{'No data'|translate}}
+                    </td>
+                </tr>
+            </table>
+            <table class="custom-table tr-pointer" *ngIf="tabType !== '-1' && tabType !== '1' && tabType !== '4'">
+                <tr>
+                    <th>{{'No.'|translate}}</th>
+                    <th>{{'Date'|translate}}</th>
+                    <th>{{'Staff ID'|translate}}</th>
+                    <th>
+                        {{'Fullname'|translate}}
+                        <img class="pointer ml-1" src="assets/images/content/ic-sort.svg" alt="Sort"
+                             *ngIf="!sort['user_name'] || sort['user_name']===''"
+                             (click)="onSortClick('user_name', 'asc')">
+                        <img class="pointer ml-1" src="assets/images/content/ic-sort-asc.svg" alt="Sort"
+                             *ngIf="sort['user_name']==='asc'" (click)="onSortClick('user_name', 'desc')">
+                        <img class="pointer ml-1" src="assets/images/content/ic-sort-desc.svg" alt="Sort"
+                             *ngIf="sort['user_name']==='desc'" (click)="onSortClick('user_name', '')">
+                    </th>
+                    <th>{{'Office type'|translate}}</th>
+                    <th>{{'Shift'|translate}}</th>
+                    <th *ngFor="let column of needColumnTemps">
+                        {{column.value}}
+                        <ng-container
+                            *ngIf="column['field_name']==='department_name' || column['field_name']==='area_name'">
+                            <img class="pointer ml-1" src="assets/images/content/ic-sort.svg" alt="Sort"
+                                 *ngIf="!sort[column.field_name] || sort[column.field_name]===''"
+                                 (click)="onSortClick(column.field_name, 'asc')">
+                            <img class="pointer ml-1" src="assets/images/content/ic-sort-asc.svg" alt="Sort"
+                                 *ngIf="sort[column.field_name]==='asc'"
+                                 (click)="onSortClick(column.field_name, 'desc')">
+                            <img class="pointer ml-1" src="assets/images/content/ic-sort-desc.svg" alt="Sort"
+                                 *ngIf="sort[column.field_name]==='desc'" (click)="onSortClick(column.field_name, '')">
+                        </ng-container>
+                    </th>
+                </tr>
+                <tr *ngFor="let staff of listStaff;let i=index;">
+                    <td>{{itemPerPage * (currentPage - 1) + i + 1}}</td>
+                    <td>{{commonService.formatDateVn(staff.date_at)}}</td>
+                    <td>{{staff.id_number}}</td>
+                    <td>{{staff.user_name}}</td>
+                    <td>{{filter['office'].name}}</td>
+                    <td>{{staff.workTimeRanges_name}}</td>
+                    <td *ngFor="let column of needColumnTemps">{{commonService.formatTimeVn(staff[column.field_name])}}</td>
+                </tr>
+                <tr *ngIf="!listStaff.length">
+                    <td [colSpan]="16" class="text-center">
+                        {{'No data'|translate}}
+                    </td>
+                </tr>
+            </table>
+            <table class="custom-table tr-pointer" *ngIf="tabType === '4'">
+                <tr>
+                    <th>{{'No.'|translate}}</th>
+                    <th>{{'Date'|translate}}</th>
+                    <th>{{'Staff ID'|translate}}</th>
+                    <th>
+                        {{'Fullname'|translate}}
+                        <img class="pointer ml-1" src="assets/images/content/ic-sort.svg" alt="Sort"
+                             *ngIf="!sort['user_name'] || sort['user_name']===''"
+                             (click)="onSortClick('user_name', 'asc')">
+                        <img class="pointer ml-1" src="assets/images/content/ic-sort-asc.svg" alt="Sort"
+                             *ngIf="sort['user_name']==='asc'" (click)="onSortClick('user_name', 'desc')">
+                        <img class="pointer ml-1" src="assets/images/content/ic-sort-desc.svg" alt="Sort"
+                             *ngIf="sort['user_name']==='desc'" (click)="onSortClick('user_name', '')">
+                    </th>
+                    <th>{{'Office type'|translate}}</th>
+                    <th>{{'Shift'|translate}}</th>
+                    <th *ngFor="let column of needColumnTemps">
+                        {{column['value']}}
+                        <ng-container
+                            *ngIf="column['field_name']==='department_name' || column['field_name']==='area_name'">
+                            <img class="pointer ml-1" src="assets/images/content/ic-sort.svg" alt="Sort"
+                                 *ngIf="!sort[column.field_name] || sort[column.field_name]===''"
+                                 (click)="onSortClick(column.field_name, 'asc')">
+                            <img class="pointer ml-1" src="assets/images/content/ic-sort-asc.svg" alt="Sort"
+                                 *ngIf="sort[column.field_name]==='asc'"
+                                 (click)="onSortClick(column.field_name, 'desc')">
+                            <img class="pointer ml-1" src="assets/images/content/ic-sort-desc.svg" alt="Sort"
+                                 *ngIf="sort[column.field_name]==='desc'" (click)="onSortClick(column.field_name, '')">
+                        </ng-container>
+                    </th>
+                </tr>
+                <tr *ngFor="let staff of listStaff; let i=index;">
+                    <td>{{itemPerPage * (currentPage - 1) + i + 1}}</td>
+                    <td>{{commonService.formatDateVn(staff.date_at)}}</td>
+                    <td>{{staff.id_number}}</td>
+                    <td>{{staff.user_name}}</td>
+                    <td>{{filter['office'].name}}</td>
+                    <td>{{staff.workTimeRanges_name}}</td>
+                    <td *ngFor="let column of needColumnTemps">{{commonService.formatTimeVn(staff[column.field_name])}}</td>
+                </tr>
+                <tr *ngIf="!listStaff.length">
+                    <td [colSpan]="16" class="text-center">
+                        {{'No data'|translate}}
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div *ngIf="listStaff.length" class="pagination-container">
+            <g-pagination [page]="currentPage" [totalPages]="totalPages"
+                          (pageChange)="onPageChange($event)"></g-pagination>
+        </div>
+        <ng-template #template let-modal>
+            <div class="modal-body">
+                <form name="form" (ngSubmit)="form.form.valid && onTemplateApplyClick()" #form="ngForm" novalidate>
+                    <h3 class="modal-title">{{'Save report form'|translate}}</h3>
+                    <p class="modal-p">{{'Your custom filters, grouping, and column structure in the report will be saved for you to view later.'|translate}}</p>
+                    <input
+                        type="text"
+                        class="custom-input"
+                        placeholder="{{'Enter report name'|translate}}"
+                        [(ngModel)]="reportName"
+                        name="report-name"
+                        #name="ngModel"
+                        maxlength="50"
+                        [pattern]="nameNumberPattern"
+                        required
+                        [ngClass]="{ 'is-invalid': form.submitted && name.invalid || resErrors['name']?.length }">
+                    <div *ngIf="form.submitted && name.invalid" class="invalid-feedback">
+                        <div *ngIf="name.errors.required">{{'This field is required'|translate}}</div>
+                        <div *ngIf="name.errors.pattern">
+                            {{'Do not input special characters, please try again!'|translate}}
+                        </div>
+                    </div>
+                    <div *ngIf="resErrors['name']?.length" class="invalid-feedback">
+                        <div *ngFor="let err of resErrors['name']">{{err}}</div>
+                    </div>
+                    <div class="d-flex space-between m-t-24">
+                        <g-button bgColor="#FF9C68" borderColor="#FF9C68"
+                                  (click)="onTemplateCancelClick()">{{'Cancel'|translate}}</g-button>
+                        <g-button type="submit">{{'Save'|translate}}</g-button>
+                    </div>
+                </form>
+            </div>
+        </ng-template>
+    </div>
+</div>
+<div class="dialog-loading" [ngStyle]="{'display': isLoading ? 'initial' : 'none'}">
+    <div class="dialog-loading-mask">
+        <mat-spinner></mat-spinner>
+        <p>{{'Loading...'|translate}}</p>
+    </div>
+</div>

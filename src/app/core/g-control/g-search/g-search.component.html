@@ -1,0 +1,8 @@
+<div class="page-search">
+    <span class="search-icon"></span>
+    <span class="vertical-divider"></span>
+    <input type="text" class="search-input" [placeholder]="placeholder" (keyup.enter)="onSearchClick()" (input)="onSearchInput()"
+           [(ngModel)]="input">
+    <img class="clear-search pointer" src="../assets/images/content/ic-remove.svg" alt="Remove"
+         (click)="onClearSearch()" *ngIf="input && clearable">
+</div>

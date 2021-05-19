@@ -1,0 +1,127 @@
+.wrapper {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    text-align: center;
+
+    .inner-left {
+        height: 100%;
+        padding-left: 35%;
+        position: relative;
+        background-image: url(../../assets/images/auth/bg-login.png);
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+
+        img {
+            position: absolute;
+            left: 7%;
+            top: 7%;
+        }
+    }
+
+    .inner-right{
+        position: relative;
+        width: 400px;
+        height: 100%;
+        margin: auto;
+
+        .top-logo {
+            position: absolute;
+            width: 100%;
+            left: 50%;
+            top: 20%;
+            transform: translateX(-50%);
+
+            img {
+                width: 150px;
+                margin-bottom: 16px;
+            }
+
+            h1 {
+                font-size: 20px;
+                line-height: 25px;
+                font-weight: 800;
+                color: #000000;
+                margin-bottom: 80px;
+            }
+        }
+
+        form {
+            margin-top: 100%;
+        }
+
+        .form-group {
+            text-align: left;
+
+            .login-input-label {
+                font-size: 13px;
+                line-height: 16px;
+                font-weight: bold;
+                color: #000000;
+            }
+
+            input{
+                width: 100%;
+                height: 40px;
+                padding-left: 10px;
+                background-color: #F6F6F6;
+                border-radius: 13px;
+                border: 1px solid #F6F6F6;
+
+                &::placeholder {
+                    font-size: 12px;
+                    color: #828282;
+                }
+            }
+        }
+    }
+}
+
+button {
+    width: 180px;
+    height: 48px;
+    font-size: 16px;
+    border-radius: 15px;
+    transition: all 0.3s linear;
+
+    &.btn-login {
+        background-color: #21A253;
+        color: #FFFFFF;
+        border: none;
+
+        &:hover {
+            background-color: #33AE47;
+        }
+    }
+
+    &.btn-login-cancel {
+        border: 1px solid #555770;
+
+        &:hover {
+            background-color: #8F90A6;
+            color: #FFFFFF;
+        }
+    }
+}
+
+label {
+    &.forgot-password, &.checkbox {
+        font-size: 12px;
+        margin-bottom: .5rem !important;
+        cursor: pointer;
+    }
+
+    &.checkbox {
+        color: #2EC36E;
+    }
+
+    &.forgot-password {
+        color: #2F80ED;
+    }
+}
+
+.m-t-40 {
+    margin-top: 40px;
+}

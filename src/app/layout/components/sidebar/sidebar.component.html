@@ -1,0 +1,118 @@
+<div class="sidebar" [ngClass]="{'show': showMenu}">
+    <div class="sidebar-logo">
+        <a href="/"><img src="assets/images/sidebar/logo.svg" alt="Smart gate logo"></a>
+    </div>
+    <div class="sidebar-auth">
+        <div class="sidebar-user">
+            <img [src]="avatar ? avatar : 'assets/images/content/img-avatar.svg'" alt="Avatar">
+            <span>{{username}}</span>
+        </div>
+        <div class="sidebar-action">
+            <span class="sidebar-btn profile" matTooltip="{{'Account profile'|translate}}" routerLink="/profile" >
+            </span>
+            <span class="sidebar-btn logout m-l-12" matTooltip="{{'Logout'|translate}}" (click)="onLoggedOutClick()">
+            </span>
+        </div>
+    </div>
+    <div class="sidebar-menu">
+        <div class="menu-group">
+            <div class="menu-group--title">
+                {{'Dashboard'|translate}}
+            </div>
+            <ul>
+                <li routerLinkActive="current" (click)="showMenu=false;">
+                    <a routerLink="/overview">
+                        <label class="menu-icon overview"></label>
+                        {{'Overview'|translate}}
+                    </a>
+                </li>
+                <li routerLinkActive="current" (click)="showMenu=false;" *ngIf="commonService.checkArrayIncludeArrayItem(permission, ['export_report', 'view_all_area', 'view_report_only_area'])">
+                    <a routerLink="/hr-report">
+                        <label class="menu-icon hr"></label>
+                        {{'Hr report'|translate}}
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="menu-group"  *ngIf="commonService.checkArrayIncludeArrayItem(permission, ['manager_user', 'manager_department', 'manager_area'])">
+            <div class="menu-group--title">
+                {{'Hr management'|translate}}
+            </div>
+            <ul>
+                <li routerLinkActive="current" (click)="showMenu=false;" *ngIf="permission.includes('manager_user')">
+                    <a routerLink="/staff">
+                        <label class="menu-icon staff"></label>
+                        {{'Staff'|translate}}
+                    </a>
+                </li>
+                <li routerLinkActive="current" (click)="showMenu=false;" *ngIf="permission.includes('manager_department')">
+                    <a routerLink="/department">
+                        <label class="menu-icon department"></label>
+                        {{'Department'|translate}}
+                    </a>
+                </li>
+                <li routerLinkActive="current" (click)="showMenu=false;" *ngIf="permission.includes('manager_area')">
+                    <a routerLink="/location">
+                        <label class="menu-icon locate"></label>
+                        {{'Locate'|translate}}
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="menu-group" *ngIf="commonService.checkArrayIncludeArrayItem(permission, ['manager_work_time', 'manager_work_time', 'manager_work_shift'])">
+            <div class="menu-group--title">
+                {{'Time management'|translate}}
+            </div>
+            <ul>
+                <li routerLinkActive="current" (click)="showMenu=false;" *ngIf="permission.includes('manager_work_time')">
+                    <a routerLink="/time-setup">
+                        <label class="menu-icon time-setup"></label>
+                        {{'Office shift'|translate}}
+                    </a>
+                </li>
+                <li routerLinkActive="current" (click)="showMenu=false;" *ngIf="permission.includes('manager_work_shift')">
+                    <a routerLink="/shift">
+                        <label class="menu-icon shift"></label>
+                        {{'Flexible shift'|translate}}
+                    </a>
+                </li>
+                <li routerLinkActive="current" (click)="showMenu=false;" *ngIf="permission.includes('manager_work_calendar')">
+                    <a routerLink="/work-calendar">
+                        <label class="menu-icon calendar"></label>
+                        {{'Work calendar'|translate}}
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="menu-group" *ngIf="commonService.checkArrayIncludeArrayItem(permission, ['manager_device', 'manager_admin_user', 'manager_log_user_access'])">
+            <div class="menu-group--title">
+                {{'Administrator'|translate}}
+            </div>
+            <ul>
+                <li routerLinkActive="current" (click)="showMenu=false;" *ngIf="permission.includes('manager_device')">
+                    <a routerLink="/device-setup">
+                        <label class="menu-icon device"></label>
+                        {{'Devices'|translate}}
+                    </a>
+                </li>
+
+                <li routerLinkActive="current" (click)="showMenu=false;" *ngIf="permission.includes('manager_admin_user')">
+                    <a routerLink="/account">
+                        <label class="menu-icon account"></label>
+                        {{'Account management'|translate}}
+                    </a>
+                </li>
+                <li routerLinkActive="current" (click)="showMenu=false;" *ngIf="permission.includes('manager_log_user_access')">
+                    <a routerLink="/history">
+                        <label class="menu-icon log"></label>
+                        {{'Attendance history'|translate}}
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div [ngClass]="{'sidebar-container': showMenu}">
+</div>

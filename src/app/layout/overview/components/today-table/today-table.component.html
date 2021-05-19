@@ -1,0 +1,22 @@
+<div class="d-flex space-between" style="padding-bottom: 11px;">
+    <span class="header--title today-{{type}}">{{title|translate}}</span>
+    <span class="detail" routerLink="{{route}}" [queryParams]="queryParams" *ngIf="data.length">{{'Detail'|translate}}</span>
+</div>
+<table class="table-fixed">
+    <tr *ngIf="data.length">
+        <th class="w-30">{{'ID'|translate}}</th>
+        <th class="w-45">{{'Fullname'|translate}}</th>
+        <th class="w-25" *ngIf="!showTime"></th>
+        <th class="w-25" *ngIf="showTime">{{'Time'|translate}}</th>
+    </tr>
+    <tr *ngFor="let item of data">
+        <td class="w-30">{{item.id_number}}</td>
+        <td class="w-45">{{item.user_name}}</td>
+        <td class="w-25" *ngIf="!showTime"></td>
+        <td class="w-25" *ngIf="showTime">{{item.work_time.substr(11, 5)}}</td>
+    </tr>
+    <tr *ngIf="!data.length">
+        <td [colSpan]="3" class="text-center" *ngIf="type==='late'">{{'Today, no one to late'|translate}}</td>
+        <td [colSpan]="3" class="text-center" *ngIf="type==='absent'">{{'Today, no one absent'|translate}}</td>
+    </tr>
+</table>

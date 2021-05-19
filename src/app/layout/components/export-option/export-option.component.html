@@ -1,0 +1,33 @@
+<div class="md-wrapper">
+    <div class="md-content">
+        <form name="form" (ngSubmit)="form.form.valid && onFormSubmit()" #form="ngForm"
+              novalidate>
+            <div class="md-header">
+                {{'Export file'|translate}}
+            </div>
+            <div class="md-body">
+                <div class="custom-input-group">
+                    <label class="label-form">{{'What file format do you want to download?'|translate}}<span class="red-txt">*</span></label>
+                    <div class="d-flex space-between" style="height: 100%;">
+                        <label class="radio">
+                            <input type="radio" name="block" value="list" [(ngModel)]="fileType"/>
+                            <img src="assets/images/content/radio-unchecked.svg" class="unchecked">
+                            <img src="assets/images/content/radio-checked.svg" class="checked">
+                            {{'List format'|translate}}
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="block" value="table" [(ngModel)]="fileType"/>
+                            <img src="assets/images/content/radio-unchecked.svg" class="unchecked">
+                            <img src="assets/images/content/radio-checked.svg" class="checked">
+                            {{'Table format'|translate}}
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="md-footer flex-center">
+                <g-button bgColor="#FF9C68" borderColor="#FF9C68" (click)="onCancelClick()">{{'Cancel'|translate}}</g-button>
+                <g-button type="submit" class="m-l-12">{{'Download'|translate}}</g-button>
+            </div>
+        </form>
+    </div>
+</div>

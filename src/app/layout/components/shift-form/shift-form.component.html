@@ -1,0 +1,195 @@
+<div class="md-wrapper">
+    <div class="md-content">
+        <form name="form" (ngSubmit)="shiftForm.form.valid && onShiftFormSubmit()" #shiftForm="ngForm">
+            <div class="md-header" *ngIf="!id">
+                {{'Add shift'|translate}}
+            </div>
+            <div class="md-header" *ngIf="id">
+                {{'Edit shift'|translate}}
+            </div>
+            <div class="md-body">
+                <div class="md-body--row m-t-24">
+                    <div class="custom-input-group">
+                        <label class="label-form">{{'Shift name'|translate}}<span class="red-txt">*</span></label>
+                        <input
+                            type="text"
+                            class="custom-input"
+                            name="shift-name"
+                            #shiftName="ngModel"
+                            [(ngModel)]="shift['name']"
+                            [pattern]="vnNameNumberPattern"
+                            placeholder="{{'Shift name'|translate}}"
+                            maxlength="25"
+                            (input)="onInputChange('name')"
+                            [ngClass]="{ 'is-invalid': shiftForm.submitted && (shiftName.invalid || resErrors['name']?.length) }"
+                            required>
+                        <div *ngIf="shiftForm.submitted && shiftName.invalid" class="invalid-feedback">
+                            <div *ngIf="shiftName.errors.required">{{'Enter shift name!'|translate}}</div>
+                            <div *ngIf="shiftName.errors.pattern">{{'Do not input special characters, please try again!'|translate}}</div>
+                        </div>
+                        <div *ngIf="shiftForm.submitted && resErrors['name']?.length" class="invalid-feedback">
+                            <div *ngFor="let error of resErrors['name']">{{error}}</div>
+                        </div>
+                    </div>
+                    <div class="custom-input-group">
+                        <label class="label-form">{{'Shift code'|translate}}<span class="red-txt">*</span></label>
+                        <input
+                            type="text"
+                            class="custom-input"
+                            name="shift-code"
+                            #shiftCode="ngModel"
+                            [(ngModel)]="shift['code']"
+                            [pattern]="codePattern"
+                            (input)="onInputChange('code')"
+                            placeholder="{{'Shift code'|translate}}"
+                            maxlength="6"
+                            [ngClass]="{ 'is-invalid': shiftForm.submitted && (shiftCode.invalid || resErrors['code']?.length) }"
+                            required>
+                        <div *ngIf="shiftForm.submitted && shiftCode.invalid" class="invalid-feedback">
+                            <div *ngIf="shiftCode.errors.required">{{'Enter shift code!'|translate}}</div>
+                            <div *ngIf="shiftCode.errors.pattern">{{'Start by A-z or a-z, include A-Z, a-z, 0-9, _, -!'|translate}}</div>
+                        </div>
+                        <div *ngIf="shiftForm.submitted && resErrors['code']?.length" class="invalid-feedback">
+                            <div *ngFor="let error of resErrors['code']">{{error}}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="md-body--row m-t-24">
+                    <div class="md-body--row mt-0">
+                        <div class="custom-input-group">
+                            <label class="label-form">{{'Start shift'|translate}}<span class="red-txt">*</span></label>
+                            <ngb-timepicker
+                                class="time"
+                                [(ngModel)]="shift['time_start']"
+                                [spinners]="false"
+                                name="from"
+                                id="start"
+                                #from="ngModel"
+                                [size]="'small'"
+                                (change)="onStartTimeChange()"
+                                [ngClass]="{'is-invalid' : shiftForm.submitted && (from.invalid || resErrors['time_start']?.length)}"
+                                required>
+                            </ngb-timepicker>
+                            <div *ngIf="shiftForm.submitted && from.invalid" class="invalid-feedback">
+                                <div *ngIf="from.errors.required">{{'Enter start time!'|translate}}</div>
+                            </div>
+                            <div *ngIf="shiftForm.submitted && resErrors['time_start']?.length" class="invalid-feedback">
+                                <div *ngFor="let error of resErrors['time_start']">{{error}}</div>
+                            </div>
+                        </div>
+                        <div class="custom-input-group">
+                            <label class="label-form">{{'End shift'|translate}}<span class="red-txt">*</span></label>
+                            <ngb-timepicker
+                                class="time"
+                                [(ngModel)]="shift['time_end']"
+                                [spinners]="false"
+                                name="to"
+                                id="end"
+                                #to="ngModel"
+                                [size]="'small'"
+                                (change)="onEndTimeChange()"
+                                [ngClass]="{'is-invalid' : shiftForm.submitted && (to.invalid  || resErrors['time_end']?.length)}"
+                                required>
+                            </ngb-timepicker>
+                            <div *ngIf="shiftForm.submitted && to.invalid" class="invalid-feedback">
+                                <div *ngIf="to.errors.required">{{'Enter end time!'|translate}}</div>
+                            </div>
+                            <div *ngIf="shiftForm.submitted && resErrors['time_end']?.length" class="invalid-feedback">
+                                <div *ngFor="let error of resErrors['time_end']">{{error}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="custom-input-group">
+                        <label class="label-form">{{'Apply location'|translate}}<span class="red-txt">*</span></label>
+                        <ng-select
+                            class="custom" style="width: 374px;"
+                            name="shifts" #shifts="ngModel"
+                            placeholder="{{'Location'|translate}}"
+                            [clearable]="false"
+                            [items]="locations"
+                            [multiple]="true"
+                            bindLabel="name"
+                            [selectableGroup]="true"
+                            [closeOnSelect]="false"
+                            bindValue="id"
+                            [(ngModel)]="shift['area_id']"
+                            [ngClass]="{'is-invalid' : shiftForm.submitted && shifts.invalid}"
+                            notFoundText="{{'No items found'|translate}}"
+                            required>
+                            <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
+                                <span>{{item.name}}</span><input type="checkbox" id="item-{{index}}" name="item-{{index}}" [(ngModel)]="item$.selected"/>
+                            </ng-template>
+                        </ng-select>
+                        <div *ngIf="shiftForm.submitted && shifts.invalid" class="invalid-feedback">
+                            <div *ngIf="shifts.errors.required">{{'Enter location!'|translate}}</div>
+                        </div>
+                        <div *ngIf="shiftForm.submitted && resErrors['area_id']?.length" class="invalid-feedback">
+                            <div *ngFor="let error of resErrors['area_id']">{{error}}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="md-body--row m-t-24">
+                    <div class="md-body--row mt-0">
+                        <div class="custom-input-group">
+                            <label class="label-form">{{'Go late'|translate}}</label>
+                            <div class="d-flex">
+                                <input
+                                    type="text"
+                                    class="custom-input text-center"
+                                    style="width: 120px;"
+                                    placeholder="0"
+                                    [ngClass]="{'is-invalid' : shiftForm.submitted && (timeLate.invalid || resErrors['time_late']?.length)}"
+                                    [(ngModel)]="shift['time_late']" name="time_late"
+                                    (input)="onInputChange('time_late')"
+                                    #timeLate="ngModel"
+                                    positiveInteger>
+                                <span class="minute m-l-12">{{'minute'|translate}}</span>
+                            </div>
+                            <div *ngIf="shiftForm.submitted && timeLate.invalid" class="invalid-feedback">
+                                <div *ngIf="timeLate.errors.positiveInteger">{{'Enter positive number!'|translate}}</div>
+                            </div>
+                            <div *ngIf="resErrors['time_late']?.length" class="invalid-feedback">
+                                <div *ngFor="let error of resErrors['time_late']">{{error}}</div>
+                            </div>
+                        </div>
+                        <div class="custom-input-group">
+                            <label class="label-form">{{'Come back soon'|translate}}</label>
+                            <div class="d-flex">
+                                <input
+                                    type="text"
+                                    class="custom-input text-center"
+                                    style="width: 120px;"
+                                    placeholder="0"
+                                    [ngClass]="{'is-invalid' : shiftForm.submitted && (timeBack.invalid || resErrors['time_back']?.length)}"
+                                    [(ngModel)]="shift['time_back']"
+                                    (input)="onInputChange('time_back')"
+                                    name="time_back"
+                                    #timeBack="ngModel"
+                                    positiveInteger>
+                                <span class="minute m-l-12">{{'minute'|translate}}</span>
+                            </div>
+                            <div *ngIf="shiftForm.submitted && timeBack.invalid" class="invalid-feedback">
+                                <div *ngIf="timeBack.errors.positiveInteger">{{'Enter positive number!'|translate}}</div>
+                            </div>
+                            <div *ngIf="resErrors['time_back']?.length" class="invalid-feedback">
+                                <div *ngFor="let error of resErrors['time_back']">{{error}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="md-footer flex-end">
+                <div>
+                    <g-button bgColor="#FF9C68" borderColor="#FF9C68" width="180" (click)="onCancelClick()">{{'Cancel'|translate}}</g-button>
+                    <g-button type="submit" bgColor="#0E9560" borderColor="#0E9560" class="m-l-24" width="180" [disabled]="formSubmitted">{{'Save'|translate}}</g-button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="dialog-loading" [ngStyle]="{'display': formSubmitted ? 'initial' : 'none'}">
+    <div class="dialog-loading-mask">
+        <mat-spinner></mat-spinner>
+        <p>{{'Loading...'|translate}}</p>
+    </div>
+</div>

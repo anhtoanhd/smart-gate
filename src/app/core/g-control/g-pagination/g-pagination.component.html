@@ -1,0 +1,11 @@
+<div [style]="style">
+    <span>{{'Page'|translate}}&nbsp;</span>
+    <input
+        style="width: 50px; text-align: center;background: #EEEEEE;border-color:transparent;border-radius: 10px;"
+        type="number" [(ngModel)]="page" (keyup.enter)="onEnter()" (blur)="onEnter()">
+    <span>&nbsp;{{'of'|translate}}&nbsp;{{totalPages}}</span>
+    <ul class="pagination">
+        <li (click)="onPreviousPageClick()" [ngStyle]="{'cursor': page === 1 ? 'default' : 'pointer'}"></li>
+        <li style="margin-left: 0 !important;" (click)="onNextPageClick()" [ngStyle]="{'cursor': page === totalPages ? 'default' : 'pointer'}"></li>
+    </ul>
+</div>

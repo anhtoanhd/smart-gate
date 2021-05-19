@@ -1,0 +1,22 @@
+.card {
+    height: 160px;
+    border-radius: 20px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: bottom center;
+    border: none;
+
+    &.bg-staff {
+        background-image: url('../../../../../assets/images/content/card/bg-staff.svg');
+    }
+    &.bg-present {
+        background-image: url('../../../../../assets/images/content/card/bg-present.svg');
+    }
+    &.bg-absent {
+        background-image: url('../../../../../assets/images/content/card/bg-absent.svg');
+    }
+    &.bg-late {
+        background-image: url('../../../../../assets/images/content/card/bg-late.svg');
+    }
+}
+

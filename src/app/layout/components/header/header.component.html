@@ -1,0 +1,19 @@
+<div class="header">
+    <div class="header-left">
+<!--        <img src="../assets/images/header/menu.svg" alt="" (click)="onMenuClick()">-->
+    </div>
+    <div class="header-right">
+        <span class="m-r-16">{{'Welcome'|translate}}, {{username}}</span>
+        <div ngbDropdown class="d-inline-block">
+            <div class="header-avatar" ngbDropdownToggle id="userDropdown">
+                <img class="avatar" [src]="avatar ? avatar : 'assets/images/content/img-avatar.svg'" alt="Avatar">
+            </div>
+            <ul ngbDropdownMenu aria-labelledby="userDropdown">
+                <li routerLinkActive="current" routerLink="/profile" ngbDropdownItem>
+                    {{'Account profile'|translate}}
+                </li>
+                <li ngbDropdownItem (click)="onLoggedout()">{{'Logout'|translate}}</li>
+            </ul>
+        </div>
+    </div>
+</div>

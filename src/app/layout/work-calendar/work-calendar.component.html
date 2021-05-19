@@ -1,0 +1,287 @@
+<div class="page-container">
+    <div class="page-head">
+        <g-search
+            placeholder="{{'Enter staff name or code'|translate}}"
+            (searchInputChange)="onSearchInputChange($event)">
+        </g-search>
+        <div class="page-filter">
+            <div class="d-flex flex-start">
+                <div class="page-filter-group">
+                    <div class="page-filter-title">{{'Time'|translate}}</div>
+                    <div class="btn-group" dropdown [insideClick]="true">
+                        <span class="caret bg-text" dropdownToggle>{{filter['month'] ? commonService.formatMonthVn(filter['month']) : 'Tất cả'}}</span>
+                        <div *dropdownMenu class="dropdown-menu" style="padding: 0;" role="menu">
+                            <div class="filter-group-container date-range" style="padding-top: 0;">
+                                <bs-datepicker-inline
+                                    [(bsValue)]="filter['month']"
+                                    (bsValueChange)="onMonthChange($event)"
+                                    [bsConfig]="bsConfig">
+                                </bs-datepicker-inline>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="page-filter-group m-l-32">
+                    <div class="page-filter-title">{{'Work area'|translate}}</div>
+                    <div class="btn-group" dropdown [insideClick]="true">
+                        <span class="caret bg-text" dropdownToggle>{{filter['location'] ? filter['location'].name : 'Dữ liệu trống'}}</span>
+                        <div *dropdownMenu class="dropdown-menu" style="padding: 0;"  role="menu">
+                            <div class="filter-group-container">
+                                <div class="search-box m-b-16">
+                                    <span class="search-icon"></span>
+                                    <span class="vertical-divider"></span>
+                                    <input type="text" class="search-input" placeholder="{{'Enter keyword'|translate}}"
+                                           (keyup)="onLocationSearch($event)">
+                                </div>
+                                <div class="wrap" *ngIf="listLocation.length">
+                                    <label class="checkbox space-between" *ngFor="let area of listLocation">
+                                        <span>{{area.name}}</span>
+                                        <input type="radio" [checked]="area.isChecked"
+                                               (change)="onLocationChange($event, area)"/>
+                                        <img src="assets/images/content/radio-unchecked.svg" class="unchecked">
+                                        <img src="assets/images/content/radio-checked.svg" class="checked">
+                                    </label>
+                                </div>
+                                <div class="wrap" *ngIf="!listLocation.length">
+                                    <label>{{'No items found'|translate}}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="page-filter-group m-l-32">
+                    <div class="page-filter-title">{{'Department'|translate}}</div>
+                    <div class="btn-group" dropdown [insideClick]="true">
+                        <span class="caret bg-text" dropdownToggle>{{filter['departments']?.length ? commonService.joinField(filter['departments'], 'name') : 'Tất cả'}}</span>
+                        <div *dropdownMenu class="dropdown-menu" style="padding: 0;" role="menu">
+                            <div class="filter-group-container">
+                                <div class="search-box m-b-16">
+                                    <span class="search-icon"></span>
+                                    <span class="vertical-divider"></span>
+                                    <input type="text" class="search-input" placeholder="{{'Enter keyword'|translate}}"
+                                           (keyup)="onDepartmentSearch($event)">
+                                </div>
+                                <div class="wrap" *ngIf="listDepartment.length">
+                                    <label class="checkbox space-between" *ngFor="let department of listDepartment">
+                                        <span>{{department.name}}</span>
+                                        <input type="checkbox" [checked]="department.isChecked"
+                                               (change)="onDepartmentChange($event, department)"/>
+                                        <img src="assets/images/content/checkbox-unchecked.svg" class="unchecked">
+                                        <img src="assets/images/content/checkbox-checked.svg" class="checked">
+                                    </label>
+                                </div>
+                                <div class="wrap" *ngIf="!listDepartment.length">
+                                    <label>{{'No items found'|translate}}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="page-filter-group m-l-32">
+                    <div class="page-filter-title">{{'Shift'|translate}}</div>
+                    <div class="btn-group" dropdown [insideClick]="true">
+                        <span class="caret bg-text" dropdownToggle>{{filter['shifts']?.length ? commonService.joinField(filter['shifts'], 'name') : 'Tất cả'}}</span>
+                        <div *dropdownMenu class="dropdown-menu" style="padding: 0;" role="menu">
+                            <div class="filter-group-container">
+                                <div class="search-box m-b-16">
+                                    <span class="search-icon"></span>
+                                    <span class="vertical-divider"></span>
+                                    <input type="text" class="search-input" placeholder="{{'Enter keyword'|translate}}"
+                                           (keyup)="onShiftSearch($event)">
+                                </div>
+                                <div class="wrap" *ngIf="listShift.length">
+                                    <label class="checkbox space-between" *ngFor="let shift of listShift">
+                                        <span>{{shift.name}}</span>
+                                        <input type="checkbox" [checked]="shift.isChecked"
+                                               (change)="onShiftChange($event, shift)"/>
+                                        <img src="assets/images/content/checkbox-unchecked.svg" class="unchecked">
+                                        <img src="assets/images/content/checkbox-checked.svg" class="checked">
+                                    </label>
+                                </div>
+                                <div class="wrap" *ngIf="!listShift.length">
+                                    <label>{{'No items found'|translate}}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <span class="reset" (click)="onResetFilterClick()">Reset</span>
+        </div>
+    </div>
+    <div class="page-content">
+        <div class="calendar-box">
+            <div class="calendar-box-header">
+                <div class="calendar-header-right">
+<!--                    <label class="calendar-tab-item" [(ngModel)]="viewMode" btnRadio="month" tabindex="0"-->
+<!--                           role="button" (click)="onTabChange('month')">{{'Follow month'|translate}}</label>-->
+                    <label class="calendar-tab-item" [(ngModel)]="viewMode" btnRadio="staff" tabindex="2"
+                           role="button" (click)="onTabChange('staff')">{{'Follow staff'|translate}}</label>
+                    <label class="calendar-tab-item" [(ngModel)]="viewMode" btnRadio="shift" tabindex="1"
+                           role="button" (click)="onTabChange('shift')">{{'Follow shift'|translate}}</label>
+                </div>
+                <div class="calendar-header-left">
+                    <img class="pointer m-r-40" src="assets/images/content/ic-previous.svg" alt="Previous month" (click)="onPrevMonthClick()"/>
+                    <label class="month" *ngIf="viewMode === 'month'">{{monthString}}</label>
+                    <label class="month" *ngIf="viewMode === 'shift' || viewMode === 'staff'">{{commonService.formatDateVn(weekDays[0]['date'])}} - {{commonService.formatDateVn(weekDays[6]['date'])}}</label>
+                    <img class="pointer m-l-40" src="assets/images/content/ic-next.svg" alt="Next month" (click)="onNextMonthClick()"/>
+                </div>
+                <g-button class="m-l-12" width="200" routerLink="/work-calendar/wizard">{{'Add work calendar'|translate}}</g-button>
+            </div>
+            <div class="w-calendar-content">
+                <div class="content-left" [ngClass]="{'month' : viewMode === 'month', 'staff' : viewMode === 'staff' || viewMode === 'shift'}" scrollTracker (scrollingFinished)="onStaffViewScroll()">
+                    <!-- Month mode -->
+                    <full-calendar
+                        class="custom"
+                        #calendar *ngIf="viewMode === 'month'"
+                        [header]="{
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'listWeek'
+                        }"
+                        defaultView="dayGridMonth"
+                        [fixedWeekCount]="false"
+                        [plugins]="calendarPlugins"
+                        [weekends]="calendarWeekends"
+                        [events]="calendarEvents"
+                        (dayRender)="dayRender($event)">
+                    </full-calendar>
+
+                    <!-- Shift mode || Staff mode-->
+                    <table class="calendar-table" *ngIf="viewMode === 'shift' || viewMode === 'staff'">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th *ngFor="let weekDay of weekDays">
+                                <div class="c-thead" [ngClass]="{'th-today': today.getTime() === weekDay['date'].getTime()}">
+                                    <span>{{weekDay['date'].getDate()}}</span>
+                                    <span>{{weekDay['weekDay']}}</span>
+                                </div>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody *ngIf="viewMode === 'shift' && shiftsChosen.length">
+                        <tr *ngFor="let shift of shiftsChosen">
+                            <td>
+                                <div>{{shift['name']}}</div>
+                                <div>-</div>
+                                <div>{{shift['time_start'].substr(0, 5)}} - {{shift['time_end'].substr(0, 5)}}</div>
+                            </td>
+                            <td *ngFor="let weekDay of weekDays"
+                                [ngClass]="{'none-edit': now.getTime() >= commonService.convertTimeStamp(weekDay['date'], shift['time_start']) || !shift['is_activated']}">
+                                <div class="no-staff" [ngClass]="{'hide': now.getTime() >= commonService.convertTimeStamp(weekDay['date'], shift['time_start']) || !shift['is_activated']}"
+                                     *ngIf="!shiftData[shift.id] || !shiftData[shift.id][weekDay.sqlDate]?.length"
+                                     (click)="onOpenStaffShiftFormClick(shift, weekDay['date'], true)">
+                                    <img src="assets/images/content/ic-add.svg" alt="Add">
+                                    <span class="add-text">{{'Add staff'|translate}}</span>
+                                </div>
+                                <div class="mobile" (click)="onOpenStaffShiftFormClick(shift, weekDay['date'], true)"
+                                     *ngIf="!shiftData[shift.id] || !shiftData[shift.id][weekDay.sqlDate]?.length"
+                                     [ngClass]="{'hide': now.getTime() >= commonService.convertTimeStamp(weekDay['date'], shift['time_start']) || !shift['is_activated']}">
+                                </div>
+                                <div class="have-staff" *ngIf="shiftData[shift.id] && shiftData[shift.id][weekDay.sqlDate]?.length">
+                                    <div class="list-staff">
+                                        <div class="staff-avatar" *ngFor="let staff of shiftData[shift.id][weekDay.sqlDate]; let i=index;" [ngClass]="{'hidden': i >= 5}">
+                                            <img [lazyLoad]="staff['image_url']" alt="Avatar">
+                                        </div>
+                                    </div>
+                                    <div class="total-staff">
+                                        Tổng: {{shiftData[shift.id][weekDay.sqlDate]?.length}}
+                                    </div>
+                                    <div class="edit-staff"
+                                         (click)="onOpenStaffShiftFormClick(shift, weekDay['date'], false)">
+                                        {{'Edit'|translate}}
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                        <tbody *ngIf="viewMode === 'staff' && listStaff.length">
+                        <tr *ngFor="let staff of listStaff">
+                            <td>
+                                <img [src]="staff.image_url" alt="" class="avatar">
+                                <div>{{staff['name']}}</div>
+                                <div>{{'Staff ID'|translate}}: {{staff['id_number']}}</div>
+                            </td>
+                            <td *ngFor="let weekDay of weekDays">
+                                <div class="staff-mode-cell">
+                                    <div
+                                        class="shift-i"
+                                        *ngFor="let shift of staffData[staff.id][weekDay.sqlDate]"
+                                        [style.backgroundColor]="colors[getIndex(shiftsChosen, shift, 'id')]">
+                                        {{shift.name}}
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                        <tbody *ngIf="(viewMode === 'shift' && !shiftsChosen.length) || (viewMode === 'staff' && !listStaff.length)">
+                            <tr *ngFor="let fake of fakeRowData">
+                                <td></td>
+                                <td *ngFor="let weekDay of weekDays">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="content-right" [ngClass]="{'staff': viewMode==='staff'}" *ngIf="(viewMode === 'shift' && shiftsChosen.length) || (viewMode === 'staff' && listStaff.length)">
+                    <ng-container *ngIf="!shiftsChosen.length && !shiftDayData.date">
+                        <div class="shift-info">
+                            {{'Shift information'|translate}}
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="shiftsChosen.length && !shiftDayData.date">
+                        <div class="shift-info">
+                            {{'Shift information'|translate}}
+                        </div>
+                        <div class="shift-info-wrap" [ngClass]="{'month': viewMode==='month'}">
+                            <div class="shift-item" *ngFor="let shift of shiftsChosen; let i=index;">
+                                <div class="shift-name">
+                                    <div class="before" [style.backgroundColor]="colors[i]"></div>
+                                    <div class="before-child" [style.backgroundColor]="colors[i]"></div>
+                                    {{shift.name}}
+                                </div>
+                                <div class="shift-i"><span>{{'Time'|translate}}: </span>{{shift.time_start.substr(0, 5)}}-{{shift.time_end.substr(0, 5)}}</div>
+                                <div class="shift-i"><span>{{'Apply location'|translate}}: </span>{{filter['location']?.name}}</div>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="shiftDayData.date && viewMode === 'month'">
+                        <div class="shift-info">
+                            {{'List shift'|translate}}
+                            <div>{{shiftDayData['dayOfWeek']}}, ngày {{commonService.formatDateVn(shiftDayData['date'])}}</div>
+                        </div>
+                        <div class="shift-info-wrap">
+                            <div class="shift-item" *ngFor="let shift of shiftDayData.data; let i=index;">
+                                <div class="shift-name">
+                                    <div class="before" [style.backgroundColor]="colors[shift['colorIndex']]"></div>
+                                    <div class="before-child" [style.backgroundColor]="colors[shift['colorIndex']]"></div>
+                                    {{shift.shifts_name}}
+                                </div>
+                                <div class="shift-i"><span>{{'Time'|translate}}: </span>{{shift.shifts_time_start.substr(0, 5)}}-{{shift.shifts_time_end.substr(0, 5)}}</div>
+                                <div class="shift-i"><span>{{'Apply location'|translate}}: </span>{{shift['area_name']}}</div>
+                                <div class="shift-i"><span>{{'Total staff'|translate}}: {{shift.countUser}}</span></div>
+                                <div class="shift-detail pointer" (click)="onEditClick(shift)">
+                                    <div class="before"></div>
+                                    {{'View/Add staff'|translate}}
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+                <div class="table-placeholder" *ngIf="(viewMode === 'shift' && !shiftsChosen.length) || (viewMode === 'staff' && !listStaff.length)">
+                    <img src="assets/images/content/frame.svg" alt="Frame">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="dialog-loading" [ngStyle]="{'display': isLoading ? 'initial' : 'none'}">
+    <div class="dialog-loading-mask">
+        <mat-spinner></mat-spinner>
+        <p>{{'Loading...'|translate}}</p>
+    </div>
+</div>

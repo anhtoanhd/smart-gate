@@ -1,0 +1,16 @@
+<div class="chart-container">
+    <div class="chart-header">
+         <span class="header--title">{{'HR situation in 30 days'|translate}}</span>
+        <span class="today">{{agoDay.getDate()}}/{{agoDay.getMonth() + 1}}/{{agoDay.getFullYear()}} - {{today.getDate()}}/{{today.getMonth() + 1}}/{{today.getFullYear()}}</span>
+    </div>
+    <div class="chart-body">
+        <canvas baseChart
+                height="424"
+                chartType="line"
+                [datasets]="chartDatasets"
+                [labels]="chartLabels"
+                [options]="charOptions"
+                [colors]="chartColors">
+        </canvas>
+    </div>
+</div>

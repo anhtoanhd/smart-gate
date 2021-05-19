@@ -1,0 +1,912 @@
+<div class="md-wrapper staff" *ngIf="formType==='staff'">
+    <form name="form" (ngSubmit)="staffForm.form.valid && onStaffFormSubmit()" #staffForm="ngForm" novalidate>
+        <div class="md-sidebar">
+            <label class="label-avatar" for="avatar">
+                <img class="md-avatar" alt="Camera"
+                    [src]="staff.avatar ? staff.avatar : 'assets/images/content/ic-camera.svg'"
+                    [ngClass]="{'is-invalid': resErrors['profile_image']?.length}">
+                <label for="avatar" class="avatar-hover">
+                    <img src="assets/images/content/ic-cam.svg" alt="Camera">
+                </label>
+            </label>
+            <input type="file" id="avatar" name="profile" hidden (change)="onAvatarChange($event)"
+                  accept=".jpg,.png,.jpeg,.gif">
+            <div *ngIf="resErrors['profile_image']?.length" class="invalid-feedback">
+                <div *ngFor="let e of resErrors['profile_image']">{{e}}</div>
+            </div>
+            <div class="md-sidebar--info" *ngIf="staff.id">
+                <div class="custom-input-group m-t-12">
+                    <label class="small-label">{{'Active'|translate}}:</label>
+                    <label class="checkbox">
+                        <input type="checkbox" [(ngModel)]="staff.is_activated" name="active" disabled/>
+                        <img src="assets/images/content/switch-off-small.svg" class="unchecked">
+                        <img src="assets/images/content/switch-on-small.svg" class="checked">
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="md-content">
+            <div class="md-body">
+                <div class="md-body--section">
+                    <div class="md-body--row">
+                        <div class="custom-input-group">
+                            <label class="label-form">{{'Fullname'|translate}}<span class="red-txt">*</span></label>
+                            <input
+                                type="text"
+                                class="custom-input"
+                                placeholder="{{'Fullname'|translate}}"
+                                maxlength="50"
+                                name="fullName"
+                                [(ngModel)]="staff.name"
+                                #fullName="ngModel"
+                                [pattern]="vnNameNumberPattern"
+                                [ngClass]="{ 'is-invalid': staffForm.submitted && (fullName.invalid || resErrors['name']?.length) }"
+                                (input)="onFieldInput('name')"
+                                required>
+                            <div *ngIf="staffForm.submitted && fullName.invalid" class="invalid-feedback">
+                                <div *ngIf="fullName.errors.required">{{'This field is required'|translate}}</div>
+                                <div *ngIf="fullName.errors.pattern">
+                                    {{'Do not input special characters, please try again!'|translate}}
+                                </div>
+                            </div>
+                            <div *ngIf="resErrors['name']?.length" class="invalid-feedback">
+                                <div *ngFor="let e of resErrors['name']">{{e}}</div>
+                            </div>
+                        </div>
+                        <div class="custom-input-group">
+                            <label class="label-form">{{'Gender'|translate}}</label>
+                            <ng-select
+                                class="custom"
+                                [clearable]="false"
+                                [items]="genders"
+                                name="gender"
+                                bindLabel="name"
+                                bindValue="id"
+                                placeholder="{{'Gender'|translate}}"
+                                [searchable]="false"
+                                [(ngModel)]="staff.gender"
+                                notFoundText="{{'No items found'|translate}}">
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="md-body--row">
+                        <div class="custom-input-group">
+                            <label class="label-form">{{'Date of birth'|translate}}</label>
+                            <input
+                                type="text"
+                                class="date-picker custom-input"
+                                name="birthday"
+                                #datepicker="bsDatepicker"
+                                (onShown)="onDatepickerShown($event, datepicker)"
+                                placeholder="{{'Date of birth'|translate}}"
+                                [(ngModel)]="staff.birthday"
+                                [bsConfig]="{ isAnimated: true, showWeekNumbers: false, selectFromOtherMonth: true, dateInputFormat: 'DD/MM/YYYY'}"
+                                bsDatepicker
+                                readonly>
+                        </div>
+                        <div class="custom-input-group">
+                            <label class="label-form">{{'Phone number'|translate}}</label>
+                            <input
+                                type="text"
+                                class="custom-input"
+                                name="telephone"
+                                #telephone="ngModel"
+                                maxlength="20"
+                                [pattern]="phonePattern"
+                                [ngClass]="{ 'is-invalid': staffForm.submitted && (telephone.invalid || resErrors['telephone']?.length) }"
+                                (input)="onFieldInput('telephone')"
+                                [(ngModel)]="staff.telephone"
+                                placeholder="{{'Phone number'|translate}}">
+                            <div *ngIf="staffForm.submitted && telephone.invalid" class="invalid-feedback">
+                                <div *ngIf="telephone.errors.pattern">{{'This phone is invalid'|translate}}</div>
+                            </div>
+                            <div *ngIf="resErrors['telephone']?.length" class="invalid-feedback">
+                                <div *ngFor="let e of resErrors['telephone']">{{e}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="md-body--row">
+                        <div class="custom-input-group">
+                            <label class="label-form">{{'Email'|translate}}</label>
+                            <input
+                                type="text"
+                                class="custom-input"
+                                placeholder="{{'Email'|translate}}"
+                                [(ngModel)]="staff.email"
+                                name="email"
+                                #email="ngModel"
+                                [pattern]="emailPattern"
+                                [ngClass]="{ 'is-invalid': staffForm.submitted && email.invalid || resErrors['email']?.length}"
+                                (input)="onFieldInput('email')">
+                            <div *ngIf="staffForm.submitted && email.invalid" class="invalid-feedback">
+                                <div *ngIf="email.errors.pattern">{{'This email is invalid'|translate}}</div>
+                                <div *ngIf="email.errors.required">{{'This field is required'|translate}}</div>
+                            </div>
+                            <div *ngIf="resErrors['email']?.length" class="invalid-feedback">
+                                <div *ngFor="let err of resErrors['email']">{{err}}</div>
+                            </div>
+                        </div>
+                        <div class="custom-input-group">
+                            <label class="label-form">{{'Language'|translate}}</label>
+                            <ng-select
+                                class="custom"
+                                [clearable]="false"
+                                [items]="languages"
+                                name="language"
+                                bindLabel="name"
+                                bindValue="id"
+                                placeholder="{{'Language'|translate}}"
+                                [searchable]="false"
+                                [(ngModel)]="staff.locale"
+                                notFoundText="{{'No items found'|translate}}">
+                            </ng-select>
+                        </div>
+                    </div>
+                </div>
+                <div class="md-body--section">
+                    <div class="md-body--row">
+                        <div class="custom-input-group">
+                            <div class="d-flex space-between">
+                                <label class="label-form">{{'Staff ID'|translate}}</label>
+<!--                                <label class="label-form pointer" style="color: #2F80ED; text-decoration: underline;" (click)="onGenerateCodeClick()">{{'Generate code'}}</label>-->
+                            </div>
+                            <input
+                                type="text"
+                                class="custom-input"
+                                name="id"
+                                #id="ngModel"
+                                [(ngModel)]="staff.id_number"
+                                placeholder="{{'Staff ID'|translate}}"
+                                maxlength="25"
+                                (keyup)="onStaffIdKeyUp()"
+                                [pattern]="codePattern"
+                                [ngClass]="{ 'is-invalid': staffForm.submitted && id.invalid || resErrors['id_number']?.length}"
+                                (input)="onFieldInput('id_number')">
+                            <div>
+                                <span style="color: #791F00; font-size: 12px; font-style: italic;">{{'System will auto generate if empty!'|translate}}</span>
+                            </div>
+                            <div *ngIf="staffForm.submitted && id.invalid" class="invalid-feedback">
+                                <div *ngIf="id.errors.pattern">
+                                    {{'Start by A-z or a-z, include A-Z, a-z, 0-9, _, -!'|translate}}
+                                </div>
+                                <div *ngIf="id.errors.maxLength">
+                                    {{'Maximum 25 characters!'|translate}}
+                                </div>
+                            </div>
+                            <div *ngIf="resErrors['id_number']?.length" class="invalid-feedback">
+                                <div *ngFor="let err of resErrors['id_number']">{{err}}</div>
+                            </div>
+                        </div>
+                        <div class="custom-input-group">
+                            <label class="label-form">{{'Position'|translate}}</label>
+                            <input
+                                type="text"
+                                class="custom-input"
+                                name="position"
+                                [(ngModel)]="staff.user_position"
+                                placeholder="{{'Position'|translate}}"
+                                maxlength="100">
+                        </div>
+                    </div>
+                    <div class="md-body--row">
+                        <div class="custom-input-group">
+                            <label class="label-form">{{'Department'|translate}}</label>
+                            <ng-select
+                                class="custom"
+                                style="width: 305px;"
+                                [clearable]="false"
+                                [items]="departments"
+                                name="department"
+                                bindLabel="name"
+                                bindValue="id"
+                                placeholder="{{'Department'|translate}}"
+                                [searchable]="false"
+                                [(ngModel)]="staff.department_id"
+                                notFoundText="{{'No items found'|translate}}">
+                            </ng-select>
+                        </div>
+                        <div class="custom-input-group">
+                            <div class="custom-input-group">
+                                <label class="label-form">{{'Location'|translate}}</label>
+                                <ng-select
+                                    class="custom"
+                                    style="width: 305px;"
+                                    [clearable]="false"
+                                    [items]="locations"
+                                    name="location"
+                                    bindLabel="name"
+                                    bindValue="id"
+                                    placeholder="{{'Location'|translate}}"
+                                    [searchable]="false"
+                                    [(ngModel)]="staff.area_id"
+                                    notFoundText="{{'No items found'|translate}}">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="md-body--section">
+                    <div class="md-body--row">
+                        <div class="custom-input-group">
+                            <label class="label-form">{{'Start date'|translate}}</label>
+                            <input
+                                type="text"
+                                class="date-picker custom-input"
+                                style="width: 100%;"
+                                placement="top"
+                                #startDatepicker="bsDatepicker"
+                                (onShown)="onDatepickerShown($event, startDatepicker)"
+                                [(ngModel)]="staff.start"
+                                placeholder="{{'DD/MM/YYYY'|translate}}"
+                                readonly name="start"
+                                [bsConfig]="{showWeekNumbers: false, selectFromOtherMonth: true, dateInputFormat: 'DD/MM/YYYY'}"
+                                bsDatepicker>
+                        </div>
+                        <div class="custom-input-group">
+                            <label class="label-form">{{'End date'|translate}}</label>
+                            <input
+                                type="text"
+                                class="date-picker custom-input"
+                                style="width: 100%"
+                                #endDatepicker="bsDatepicker"
+                                (onShown)="onDatepickerShown($event, endDatepicker)"
+                                [(ngModel)]="staff.end"
+                                placeholder="{{'DD/MM/YYYY'|translate}}"
+                                name="end"
+                                [ngClass]="{ 'is-invalid': resErrors['end_date']?.length}"
+                                (ngModelChange)="onEndDateChange()"
+                                placement="top"
+                                [bsConfig]="{showWeekNumbers: false, selectFromOtherMonth: true, dateInputFormat: 'DD/MM/YYYY'}"
+                                bsDatepicker
+                                readonly>
+                            <div *ngIf="resErrors['end_date']?.length" class="invalid-feedback">
+                                <div *ngFor="let err of resErrors['end_date']">{{err}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="md-body--section">
+                    <div class="md-body--row">
+                        <div class="custom-input-group">
+                            <label class="label-form">{{'Which office block does the employee belong to?'|translate}}<span class="red-txt">*</span></label>
+                            <div class="d-flex space-between" style="height: 100%;">
+                                <label class="radio">
+                                    <input type="radio" name="block" value="back_office" [(ngModel)]="staff['office_type']" [checked]="staff['office_type']==='back_office'"/>
+                                    <img src="assets/images/content/radio-unchecked.svg" class="unchecked">
+                                    <img src="assets/images/content/radio-checked.svg" class="checked">
+                                    {{'Backoffice block'|translate}}
+                                </label>
+                                <label class="radio">
+                                    <input type="radio" name="block" value="shift_office" [(ngModel)]="staff['office_type']"
+                                           (change)="onOfficeChange($event)" [checked]="staff['office_type']==='shift_office'"/>
+                                    <img src="assets/images/content/radio-unchecked.svg" class="unchecked">
+                                    <img src="assets/images/content/radio-checked.svg" class="checked">
+                                    {{'Shift block'|translate}}
+                                </label>
+                            </div>
+                        </div>
+                        <div class="custom-input-group">
+                            <label class="label-form" [ngClass]="{'disabled' : staff['office_type']!=='back_office'}">
+                                {{'Shift'|translate}}<span class="red-txt" *ngIf="staff['office_type']==='back_office'">*</span>
+                            </label>
+                            <ng-select
+                                class="custom time-picker"
+                                name="shifts" #shift="ngModel"
+                                placeholder="{{'Shift'|translate}}"
+                                [disabled]="staff['office_type']!=='back_office'"
+                                [clearable]="false"
+                                [searchable]="false"
+                                [items]="shifts"
+                                [multiple]="true"
+                                bindLabel="name"
+                                bindValue="id"
+                                [selectableGroup]="true"
+                                [closeOnSelect]="false"
+                                [required]="staff['office_type']==='back_office'"
+                                [ngClass]="{ 'is-invalid': staffForm.submitted && (shift.invalid || resErrors['work_time_ranges_id']?.length) }"
+                                [(ngModel)]="staff.list_work_time_ranges_id"
+                                notFoundText="{{'No items found'|translate}}">
+                                <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
+                                    {{item.name}}<input type="checkbox" id="item-{{index}}" name="item-{{index}}" [ngModel]="item$.selected"/>
+                                </ng-template>
+                            </ng-select>
+                            <div *ngIf="staffForm.submitted && shift.invalid" class="invalid-feedback">
+                                <div *ngIf="shift.errors.required">{{'This field is required'|translate}}</div>
+                            </div>
+                            <div *ngIf="resErrors['work_time_ranges_id']?.length" class="invalid-feedback">
+                                <div *ngFor="let err of resErrors['work_time_ranges_id']">{{err}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="md-footer">
+                <g-button bgColor="#FF9C68" borderColor="#FF9C68" (click)="onCancelClick()">{{'Cancel'|translate}}</g-button>
+                <g-button type="submit" class="m-l-12" [disabled]="isLoading">{{'Save'|translate}}</g-button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="md-wrapper" *ngIf="formType==='department'">
+    <div class="md-content">
+        <form name="form" (ngSubmit)="departmentForm.form.valid && onDepartmentFormSubmit()" #departmentForm="ngForm"
+              novalidate>
+            <div class="md-header">
+                {{'Department information'|translate}}
+            </div>
+            <div class="md-body">
+                <div class="custom-input-group">
+                    <label class="label-form">{{'Department name'|translate}}<span class="red-txt">*</span></label>
+                    <input
+                        type="text"
+                        class="custom-input"
+                        placeholder="{{'Department name'|translate}}"
+                        maxlength="50"
+                        name="name"
+                        [(ngModel)]="department.name"
+                        #name="ngModel"
+                        [pattern]="vnNameNumberPattern"
+                        (input)="onFieldInput('name')"
+                        [ngClass]="{ 'is-invalid': departmentForm.submitted && (name.invalid || resErrors['name']?.length) }"
+                        required>
+                    <div *ngIf="departmentForm.submitted && name.invalid" class="invalid-feedback">
+                        <div *ngIf="name.errors.required">{{'This field is required'|translate}}</div>
+                        <div
+                            *ngIf="name.errors.pattern">{{'Do not input special characters, please try again!'|translate}}</div>
+                    </div>
+                    <div *ngIf="resErrors['name']?.length" class="invalid-feedback">
+                        <div *ngFor="let e of resErrors['name']">{{e}}</div>
+                    </div>
+                </div>
+                <div class="custom-input-group m-t-16">
+                    <label class="label-form">{{'Department code'|translate}}</label>
+                    <input
+                        type="text"
+                        class="custom-input"
+                        placeholder="{{'Department code'|translate}}"
+                        maxlength="6"
+                        name="department-code"
+                        #departmentCode="ngModel"
+                        [(ngModel)]="department.department_code"
+                        [pattern]="codePattern"
+                        [ngClass]="{ 'is-invalid': departmentForm.submitted && (departmentCode.invalid || resErrors['department_code']?.length) }"
+                        (input)="onFieldInput('department_code')">
+                    <div *ngIf="departmentForm.submitted && departmentCode.invalid" class="invalid-feedback">
+                        <div *ngIf="departmentCode.errors.maxlength">{{'Max length is 6 characters'|translate}}</div>
+                        <div *ngIf="departmentCode.errors.pattern">{{'Start by A-z or a-z, include A-Z, a-z, 0-9, _, -!'|translate}}</div>
+                    </div>
+                    <div *ngIf="resErrors['department_code']?.length" class="invalid-feedback">
+                        <div *ngFor="let e of resErrors['department_code']">{{e}}</div>
+                    </div>
+                </div>
+                <div class="custom-input-group m-t-16">
+                    <label class="label-form">{{'Description'|translate}}</label>
+                    <textarea
+                        type="text"
+                        class="custom-input"
+                        style="height: auto;"
+                        placeholder="{{'Description'|translate}}"
+                        maxlength="150"
+                        name="description"
+                        [(ngModel)]="department.description"
+                        rows="3">
+                    </textarea>
+                </div>
+                <div class="custom-input-group" style="flex-grow: 1;">
+                    <label class="label-form">{{'Shift'|translate}}</label>
+                    <ng-select
+                        class="custom time-picker"
+                        [clearable]="false"
+                        [items]="shifts"
+                        bindLabel="name"
+                        bindValue="id"
+                        placeholder="{{'Shift'|translate}}"
+                        [searchable]="false"
+                        name="shift"
+                        [(ngModel)]="department.shift"
+                        notFoundText="{{'No items found'|translate}}">
+                    </ng-select>
+                </div>
+                <div class="m-t-16" style="display: flex; align-items: center;">
+                    <label class="label-form">{{'Active'|translate}}</label>
+                    <label class="checkbox m-l-12">
+                        <input type="checkbox" [(ngModel)]="department.is_active" name="d-active"/>
+                        <img src="assets/images/content/switch-off-small.svg" class="unchecked">
+                        <img src="assets/images/content/switch-on-small.svg" class="checked">
+                    </label>
+                </div>
+            </div>
+            <div class="md-footer flex-center">
+                <g-button bgColor="#FF9C68" borderColor="#FF9C68" (click)="onCancelClick()">{{'Cancel'|translate}}</g-button>
+                <g-button type="submit" class="m-l-12" [disabled]="isLoading">{{'Save'|translate}}</g-button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="md-wrapper" *ngIf="formType==='location'">
+    <div class="md-content">
+        <form name="form" (ngSubmit)="locationForm.form.valid && onLocationFormSubmit()" #locationForm="ngForm"
+              novalidate>
+            <div class="md-header">
+                {{'Location information'|translate}}
+            </div>
+            <div class="md-body">
+                <div class="custom-input-group">
+                    <label class="label-form">{{'Location name'|translate}}<span class="red-txt">*</span></label>
+                    <input
+                        type="text"
+                        class="custom-input"
+                        placeholder="{{'Location name'|translate}}"
+                        maxlength="50"
+                        name="name"
+                        #name="ngModel"
+                        [(ngModel)]="location.name"
+                        [pattern]="vnNameNumberPattern"
+                        (input)="onFieldInput('name')"
+                        [ngClass]="{ 'is-invalid': locationForm.submitted && (name.invalid || resErrors['name']?.length) }"
+                        required>
+                    <div *ngIf="locationForm.submitted && name.invalid" class="invalid-feedback">
+                        <div *ngIf="name.errors.required">{{'This field is required'|translate}}</div>
+                        <div *ngIf="name.errors.pattern">
+                            {{'Do not input special characters, please try again!'|translate}}
+                        </div>
+                    </div>
+                    <div *ngIf="resErrors['name']?.length" class="invalid-feedback">
+                        <div *ngFor="let e of resErrors['name']">{{e}}</div>
+                    </div>
+                </div>
+                <div class="custom-input-group m-t-16">
+                    <label class="label-form">{{'Location code'|translate}}</label>
+                    <input
+                        type="text"
+                        class="custom-input"
+                        placeholder="{{'Location code'|translate}}"
+                        maxlength="6"
+                        name="location-code"
+                        #locationCode="ngModel"
+                        [(ngModel)]="location.area_code"
+                        [pattern]="codePattern"
+                        [ngClass]="{ 'is-invalid': locationForm.submitted && (locationCode.invalid || resErrors['area_code']?.length) }"
+                        (input)="onFieldInput('area_code')">
+                    <div *ngIf="locationForm.submitted && locationCode.invalid" class="invalid-feedback">
+                        <div *ngIf="locationCode.errors.maxlength">{{'Max length is 6 characters'|translate}}</div>
+                        <div *ngIf="locationCode.errors.pattern">
+                            {{'Start by A-z or a-z, include A-Z, a-z, 0-9, _, -!'|translate}}
+                        </div>
+                    </div>
+                    <div *ngIf="resErrors['area_code']?.length" class="invalid-feedback">
+                        <div *ngFor="let e of resErrors['area_code']">{{e}}</div>
+                    </div>
+                </div>
+                <div class="custom-input-group m-t-16">
+                    <label class="label-form">{{'Description'|translate}}</label>
+                    <textarea
+                        type="text"
+                        class="custom-input"
+                        style="height: auto;"
+                        placeholder="{{'Description'|translate}}"
+                        maxlength="150"
+                        name="description"
+                        [(ngModel)]="location.description"
+                        rows="3">
+                    </textarea>
+                </div>
+                <div class="custom-input-group" style="flex-grow: 1;">
+                    <label class="label-form">{{'Shift'|translate}}</label>
+                    <ng-select
+                        class="custom time-picker"
+                        [clearable]="false"
+                        [items]="shifts"
+                        bindLabel="name"
+                        bindValue="id"
+                        placeholder="{{'Shift'|translate}}"
+                        [searchable]="false"
+                        name="shift"
+                        [(ngModel)]="location.shift"
+                        notFoundText="{{'No items found'|translate}}">
+                    </ng-select>
+                </div>
+                <div class="custom-input-group m-t-16">
+                    <label class="label-form">{{'In out role'|translate}}</label>
+                    <ng-select
+                        class="custom"
+                        [clearable]="false"
+                        [items]="inOutRoles"
+                        bindLabel="name"
+                        bindValue="id"
+                        placeholder="{{'In out role'|translate}}"
+                        [searchable]="false"
+                        name="limit_access"
+                        [(ngModel)]="location.limit_access"
+                        notFoundText="{{'No items found'|translate}}">
+                    </ng-select>
+                </div>
+                <div class="m-t-16" style="display: flex; align-items: center">
+                    <label class="label-form">{{'Active'|translate}}</label>
+                    <label class="checkbox m-l-12">
+                        <input type="checkbox" [(ngModel)]="location.is_active" name="is_active"/>
+                        <img src="assets/images/content/switch-off-small.svg" class="unchecked">
+                        <img src="assets/images/content/switch-on-small.svg" class="checked">
+                    </label>
+                </div>
+            </div>
+            <div class="md-footer flex-center">
+                <g-button bgColor="#FF9C68" borderColor="#FF9C68" (click)="onCancelClick()">{{'Cancel'|translate}}</g-button>
+                <g-button type="submit" class="m-l-12" [disabled]="isLoading">{{'Save'|translate}}</g-button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="md-wrapper" *ngIf="formType==='account'">
+    <div class="md-content">
+        <form name="form" (ngSubmit)="accountForm.form.valid && onAccountFormSubmit()" #accountForm="ngForm"
+              [mustMatch]="['password', 'repassword']" novalidate>
+            <div class="md-header" *ngIf="!id">
+                {{'Create user account'|translate}}
+            </div>
+            <div class="md-header" *ngIf="id">
+                {{'Edit user account'|translate}}
+            </div>
+            <div class="md-body">
+                <div class="md-body--row">
+                    <div class="custom-input-group">
+                        <label class="label-form">{{'Staff'|translate}}<span class="red-txt">*</span></label>
+                        <ng-select
+                            class="custom"
+                            style="width: 303px;"
+                            [clearable]="false"
+                            [items]="staffs"
+                            (change)="onStaffChange()"
+                            name="staffId"
+                            #staffId="ngModel"
+                            bindLabel="name"
+                            bindValue="id"
+                            placeholder="{{'Staff'|translate}}"
+                            [(ngModel)]="staff_code"
+                            [ngClass]="{ 'is-invalid': accountForm.submitted && (staffId.invalid || resErrors['from_user_id']?.length)}"
+                            [disabled]="id"
+                            notFoundText="{{'No items found'|translate}}"
+                            required>
+                        </ng-select>
+                        <div *ngIf="accountForm.submitted && staffId.invalid" class="invalid-feedback">
+                            <div *ngIf="staffId.errors.required">{{'This field is required'|translate}}</div>
+                        </div>
+                        <div *ngIf="resErrors['from_user_id']?.length" class="invalid-feedback">
+                            <div *ngFor="let e of resErrors['from_user_id']">{{e}}</div>
+                        </div>
+                    </div>
+                    <div class="custom-input-group">
+                        <label class="label-form">{{'Staff name'|translate}}</label>
+                        <input type="text" class="custom-input" name="fullname" [(ngModel)]="account.name"
+                               placeholder="{{'Staff name'|translate}}" readonly>
+                    </div>
+                </div>
+                <div class="md-body--row">
+                    <div class="custom-input-group">
+                        <label class="label-form">{{'Department'|translate}}<span class="red-txt"></span></label>
+                        <input type="text" class="custom-input" name="department" [(ngModel)]="account.department_name"
+                               placeholder="{{'Department'|translate}}" readonly>
+                    </div>
+                    <div class="custom-input-group">
+                        <label class="label-form">{{'Location'|translate}}</label>
+                        <input type="text" class="custom-input" name="location" [(ngModel)]="account.area_name"
+                               placeholder="{{'Location'|translate}}" readonly>
+                    </div>
+                </div>
+                <div class="custom-input-group m-t-36">
+                    <label class="label-form">{{'Account login'|translate}}<span class="red-txt">*</span></label>
+                    <input
+                        type="text"
+                        class="custom-input"
+                        placeholder="{{'Enter account'|translate}}"
+                        maxlength="50"
+                        name="account"
+                        [(ngModel)]="account.username"
+                        #acc="ngModel"
+                        [disabled]="id"
+                        [pattern]="codePattern"
+                        [ngClass]="{ 'is-invalid': accountForm.submitted && (acc.invalid || resErrors['username']?.length) }"
+                        (input)="onFieldInput('username')"
+                        required>
+                    <div *ngIf="accountForm.submitted && acc.invalid" class="invalid-feedback">
+                        <div *ngIf="acc.errors.required">{{'This field is required'|translate}}</div>
+                        <div *ngIf="acc.errors.pattern">
+                            {{'Start by A-z or a-z, include A-Z, a-z, 0-9, _, -!'|translate}}
+                        </div>
+                    </div>
+                    <div class="invalid-feedback" *ngIf="resErrors['username']?.length">
+                        <div *ngFor="let e of resErrors['username']">{{e}}</div>
+                    </div>
+                </div>
+                <div class="custom-input-group m-t-16">
+                    <label class="label-form">{{'Password'|translate}}<span class="red-txt" *ngIf="!id">*</span></label>
+                    <input
+                        type="password"
+                        class="custom-input"
+                        placeholder="{{'Enter password'|translate}}"
+                        name="password"
+                        [(ngModel)]="account.password"
+                        #password="ngModel"
+                        minlength="8"
+                        maxLength="20"
+                        [pattern]="passwordPattern"
+                        [ngClass]="{ 'is-invalid': (accountForm.submitted && password.invalid) || resErrors['password']?.length }"
+                        (input)="onFieldInput('password')"
+                        [required]="!id">
+                    <div *ngIf="accountForm.submitted && password.invalid" class="invalid-feedback">
+                        <div *ngIf="password.errors.required">{{'This field is required'|translate}}</div>
+                        <div *ngIf="password.errors.pattern">
+                            <ul>
+                                <li>{{'Password must be at least 8 characters'|translate}}</li>
+                                <li>{{'Password at least one lowercase letter (a-z)'|translate}}</li>
+                                <li>{{'Password at least one uppercase character (A-Z)'|translate}}</li>
+                                <li>{{'Password at least one number (0-9)'|translate}}</li>
+                                <li>{{'Password at least one special character (! @ # $% ^ &)'|translate}}</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="invalid-feedback" *ngIf="resErrors['password']?.length">
+                        <div *ngFor="let e of resErrors['password']">{{e}}</div>
+                    </div>
+                </div>
+                <div class="custom-input-group m-t-16">
+                    <label class="label-form">
+                        {{'Re-Password'|translate}}
+                        <span class="red-txt" *ngIf="!id">*</span>
+                    </label>
+                    <input
+                        type="password"
+                        class="custom-input"
+                        placeholder="{{'Re-Password'|translate}}"
+                        maxlength="20"
+                        name="repassword"
+                        [(ngModel)]="account.repassword"
+                        #repassword="ngModel"
+                        [ngClass]="{ 'is-invalid': accountForm.submitted && repassword.invalid }"
+                        [required]="!id">
+                    <div *ngIf="accountForm.submitted && repassword.invalid" class="invalid-feedback">
+                        <div *ngIf="repassword.errors.required">{{'This field is required'|translate}}</div>
+                        <div *ngIf="repassword.errors.mustMatch">{{'Re-Passwords must match password'|translate}}</div>
+                    </div>
+                </div>
+                <div class="md-body--row">
+                    <div class="custom-input-group">
+                        <label class="label-form">{{'Email'|translate}}<span class="red-txt">*</span></label>
+                        <input
+                            type="text"
+                            class="custom-input"
+                            name="email"
+                            #email="ngModel"
+                            [pattern]="emailPattern"
+                            [(ngModel)]="account.email"
+                            placeholder="{{'Enter email'|translate}}"
+                            maxlength="50"
+                            [ngClass]="{ 'is-invalid': accountForm.submitted && (email.invalid || resErrors['email']?.length) }"
+                            (input)="onFieldInput('email')"
+                            [readOnly]="hasEmail"
+                            required>
+                        <div *ngIf="accountForm.submitted && email.invalid" class="invalid-feedback">
+                            <div *ngIf="email.errors.required">{{'This field is required'|translate}}</div>
+                            <div *ngIf="email.errors.pattern">{{'This email is invalid'|translate}}</div>
+                        </div>
+                        <div class="invalid-feedback" *ngIf="resErrors['email']?.length">
+                            <div *ngFor="let e of resErrors['email']">{{e}}</div>
+                        </div>
+                    </div>
+                    <div class="custom-input-group">
+                        <label class="label-form">{{'Role'|translate}}<span class="red-txt">*</span></label>
+                        <ng-select
+                            class="custom"
+                            style="width: 303px;"
+                            [clearable]="false"
+                            [items]="roles"
+                            [searchable]="false"
+                            name="role"
+                            #role="ngModel"
+                            bindLabel="name"
+                            bindValue="id"
+                            placeholder="{{'Choose role'|translate}}"
+                            [(ngModel)]="account.role_id"
+                            [ngClass]="{ 'is-invalid': accountForm.submitted && role.invalid }"
+                            notFoundText="{{'No items found'|translate}}"
+                            required>
+                        </ng-select>
+                        <div *ngIf="accountForm.submitted && role.invalid" class="invalid-feedback">
+                            <div *ngIf="role.errors.required">{{'This field is required'|translate}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="md-footer">
+                <g-button bgColor="#FF9C68" borderColor="#FF9C68" (click)="onCancelClick()">{{'Cancel'|translate}}</g-button>
+                <g-button type="submit" class="m-l-12" [disabled]="isLoading">{{'Save'|translate}}</g-button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="md-wrapper" *ngIf="formType==='device'">
+    <div class="md-content">
+        <form name="form" (ngSubmit)="deviceForm.form.valid && onDeviceFormSubmit()" #deviceForm="ngForm">
+            <div class="md-header">
+                {{'Add connect device'|translate}}
+            </div>
+            <div class="md-body">
+                <div class="md-body--row">
+                    <div class="custom-input-group">
+                        <label class="label-form">{{'Device code'|translate}}<span class="red-txt">*</span></label>
+                        <input
+                            type="text"
+                            class="custom-input"
+                            name="device-id"
+                            #deviceId="ngModel"
+                            [(ngModel)]="device.facesluice_id"
+                            [pattern]="codePattern"
+                            placeholder="{{'Device code'|translate}}"
+                            maxlength="20"
+                            [ngClass]="{ 'is-invalid': deviceForm.submitted && deviceId.invalid }"
+                            (input)="onFieldInput('facesluice_id')"
+                            required>
+                        <div *ngIf="deviceForm.submitted && deviceId.invalid" class="invalid-feedback">
+                            <div *ngIf="deviceId.errors.required">{{'This field is required'|translate}}</div>
+                            <div *ngIf="deviceId.errors.pattern">{{'Start by A-z or a-z, include A-Z, a-z, 0-9, _, -!'|translate}}</div>
+                        </div>
+                    </div>
+                    <div class="custom-input-group">
+                        <label class="label-form">{{'Device name'|translate}}<span class="red-txt">*</span></label>
+                        <input
+                            type="text"
+                            class="custom-input"
+                            name="device-name"
+                            [(ngModel)]="device.facesluice_name"
+                            placeholder="{{'Device name'|translate}}"
+                            #deviceName="ngModel"
+                            [ngClass]="{ 'is-invalid': deviceForm.submitted && deviceName.invalid }"
+                            required>
+                        <div *ngIf="deviceForm.submitted && deviceName.invalid" class="invalid-feedback">
+                            <div *ngIf="deviceName.errors.required">{{'This field is required'|translate}}</div>
+                        </div>
+                        <div *ngIf="deviceForm.submitted && resErrors['facesluice_name']?.length" class="invalid-feedback">
+                            <div *ngFor="let error of resErrors['facesluice_name']">{{error}}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="md-body--row">
+                    <div class="custom-input-group">
+                        <label class="label-form">{{'Type'|translate}}<span class="red-txt">*</span></label>
+                        <ng-select
+                            class="custom"
+                            style="width: 100%;"
+                            [clearable]="false"
+                            [items]="deviceTypes"
+                            name="device-type"
+                            #deviceType="ngModel"
+                            bindLabel="name"
+                            bindValue="id"
+                            placeholder="{{'Type'|translate}}"
+                            [(ngModel)]="device.device_type"
+                            [ngClass]="{ 'is-invalid': deviceForm.submitted && deviceType.invalid }"
+                            notFoundText="{{'No items found'|translate}}"
+                            required>
+                        </ng-select>
+                        <div *ngIf="deviceForm.submitted && deviceType.invalid" class="invalid-feedback">
+                            <div *ngIf="deviceType.errors.required">{{'This field is required'|translate}}</div>
+                        </div>
+                        <div *ngIf="deviceForm.submitted && resErrors['device_type']?.length" class="invalid-feedback">
+                            <div *ngFor="let error of resErrors['device_type']">{{error}}</div>
+                        </div>
+                    </div>
+                    <div class="custom-input-group">
+                        <label class="label-form">{{'Location'|translate}}<span class="red-txt">*</span></label>
+                        <ng-select
+                            class="custom"
+                            style="width: 372px;"
+                            [clearable]="false"
+                            [items]="locations"
+                            name="device-location"
+                            #deviceLocation="ngModel"
+                            bindLabel="name"
+                            bindValue="id"
+                            placeholder="{{'Location'|translate}}"
+                            [(ngModel)]="device.area_id"
+                            [ngClass]="{ 'is-invalid': deviceForm.submitted && deviceLocation.invalid }"
+                            notFoundText="{{'No items found'|translate}}"
+                            required>
+                        </ng-select>
+                        <div *ngIf="deviceForm.submitted && deviceLocation.invalid" class="invalid-feedback">
+                            <div *ngIf="deviceLocation.errors.required">{{'This field is required'|translate}}</div>
+                        </div>
+                        <div *ngIf="deviceForm.submitted && resErrors['area_id']?.length" class="invalid-feedback">
+                            <div *ngFor="let error of resErrors['area_id']">{{error}}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="md-body--row">
+                    <div class="custom-input-group">
+                        <label class="label-form">{{'Cloud topics'|translate}}<span class="red-txt">*</span></label>
+                        <input
+                            type="text"
+                            class="custom-input"
+                            name="device-topic"
+                            [(ngModel)]="device.cloud_topic"
+                            placeholder="{{'Cloud topics'|translate}}"
+                            #deviceTopic="ngModel"
+                            [ngClass]="{ 'is-invalid': deviceForm.submitted && (deviceTopic.invalid || resErrors['cloud_topic']?.length) }"
+                            (input)="onFieldInput('cloud_topic')"
+                            required>
+                        <div *ngIf="deviceForm.submitted && deviceTopic.invalid" class="invalid-feedback">
+                            <div *ngIf="deviceTopic.errors.required">{{'This field is required'|translate}}</div>
+                        </div>
+                        <div *ngIf="deviceForm.submitted && resErrors['cloud_topic']?.length" class="invalid-feedback">
+                            <div *ngFor="let error of resErrors['cloud_topic']">{{error}}</div>
+                        </div>
+                    </div>
+                    <div class="custom-input-group">
+                        <label class="label-form">{{'IP Address'|translate}}<span class="red-txt">*</span></label>
+                        <input
+                            type="text"
+                            class="custom-input"
+                            name="device-ip"
+                            [(ngModel)]="device.cloud_address"
+                            placeholder="{{'IP Address'|translate}}"
+                            #deviceIp="ngModel"
+                            pattern="\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b"
+                            [ngClass]="{ 'is-invalid': deviceForm.submitted && deviceIp.invalid }"
+                            (input)="onFieldInput('cloud_address')"
+                            required>
+                        <div *ngIf="deviceForm.submitted && deviceIp.invalid" class="invalid-feedback">
+                            <div *ngIf="deviceIp.errors.required">{{'This field is required'|translate}}</div>
+                            <div *ngIf="deviceIp.errors.pattern">{{'IP address is not valid'|translate}}</div>
+                        </div>
+                        <div *ngIf="deviceForm.submitted && resErrors['cloud_address']?.length" class="invalid-feedback">
+                            <div *ngFor="let error of resErrors['cloud_address']">{{error}}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-start align-center m-t-16">
+                    <label class="label-form mb-0">{{'Body temperature scan'|translate}}</label>&nbsp;&nbsp;
+                    <label class="radio p-l-24">
+                        <input type="radio" name="temperature" value="1" [(ngModel)]="device.is_temp"/>
+                        <img src="assets/images/content/radio-unchecked.svg" class="unchecked">
+                        <img src="assets/images/content/radio-checked.svg" class="checked">
+                        {{'Yes'|translate}}
+                    </label>&nbsp;&nbsp;
+                    <label class="radio p-l-16">
+                        <input type="radio" name="temperature" value="0" [(ngModel)]="device.is_temp"/>
+                        <img src="assets/images/content/radio-unchecked.svg" class="unchecked">
+                        <img src="assets/images/content/radio-checked.svg" class="checked">
+                        {{'No'|translate}}
+                    </label>
+                </div>
+                <div class="md-body--row">
+                    <div class="custom-input-group">
+                        <label class="label-form">{{'Time zone'|translate}}</label>
+                        <input type="text" class="custom-input" name="id" [(ngModel)]="device.time_zone"
+                               placeholder="{{'Time zone'|translate}}" maxlength="10">
+                    </div>
+                    <div class="custom-input-group">
+                        <label class="label-form">{{'Time'|translate}}</label>
+                        <input type="text" class="custom-input" name="fullname" [(ngModel)]="device.time"
+                               placeholder="{{'Time'|translate}}" readonly>
+                    </div>
+                </div>
+            </div>
+            <div class="md-footer">
+                <div>
+                    <g-button bgColor="#FF9C68" borderColor="#FF9C68" (click)="onCancelClick()">{{'Cancel'|translate}}</g-button>
+                    <g-button type="submit" class="m-l-12" [disabled]="isLoading">{{'Save'|translate}}</g-button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="dialog-loading" [ngStyle]="{'display': isLoading ? 'initial' : 'none'}">
+    <div class="dialog-loading-mask">
+        <mat-spinner></mat-spinner>
+        <p>{{'Loading...'|translate}}</p>
+    </div>
+</div>

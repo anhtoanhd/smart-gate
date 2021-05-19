@@ -1,0 +1,74 @@
+@import "../../../../../styles/mixins";
+@import "../../../../../styles/variable";
+
+.department-container {
+    background: #FFFFFF;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    border-radius: 20px;
+
+    .department-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 12px 0;
+
+        .department {
+            background-image: url('../../../../../assets/images/content/card/ic-department.svg');
+            background-repeat: no-repeat;
+            background-position: center left;
+            padding-left: 30px;
+            @include textStyle(normal, normal, 14px, 17px, #348F6C);
+        }
+
+        .department-title {
+            @include textStyle(normal, normal, 18px, 22px, #333333);
+            height: 22px;
+            text-transform: uppercase;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 90%;
+            text-align: center;
+        }
+    }
+
+    .department-body {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 12px 0 0 20px;
+        .department-att {
+            @include textStyle(normal, normal, 13px, 16px, #828282);
+            strong {
+                @include textStyle(normal, 600, 14px, 17px, #333333);
+            }
+        }
+    }
+    .department-footer {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    &:hover {
+        background: $main-bg-color;
+        box-shadow: inset -3px 1px 6px rgba(0, 0, 0, 0.35);
+        cursor: pointer;
+        .department-header {
+            .department {
+                background-image: url('../../../../../assets/images/content/card/ic-department-hover.svg');
+                color: #CDEFD3 !important;
+            }
+            .department-title {
+                color: #FFFFFF !important;
+            }
+        }
+        .department-body {
+            .department-att {
+                color: #CDEFD3 !important;
+                strong {
+                    color: #FFFFFF !important;
+                }
+            }
+        }
+    }
+}

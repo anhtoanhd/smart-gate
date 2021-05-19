@@ -1,0 +1,83 @@
+<div class="page-container">
+    <div class="page-head">
+        <g-search
+            placeholder="{{'Enter device name or code'|translate}}"
+            (searchInputChange)="onSearchInputChange($event)">
+        </g-search>
+    </div>
+    <div class="page-content">
+        <div class="d-flex flex-start m-b-12">
+            <span class="btn-span plus" (click)="onOpenFormDialog(0)">{{'Add device'|translate}}</span>
+            <span class="btn-span delete m-l-36" (click)="onDeleteClick()" [ngClass]="{'disable': !selectedDevices.length}">{{'Delete'|translate}}</span>
+        </div>
+        <div class="table-container no-filter">
+            <table class="custom-table tr-pointer">
+                <tr>
+                    <th>
+                        <label class="checkbox">
+                            <input type="checkbox" (change)="onSelectAll($event)" [checked]="selectedDevices.length===listDevice.length && selectedDevices.length > 0"/>
+                            <img src="assets/images/content/checkbox-unchecked.svg" class="unchecked">
+                            <img src="assets/images/content/checkbox-checked.svg" class="checked">
+                        </label>
+                    </th>
+                    <th>{{'No.'|translate}}</th>
+                    <th>{{'Device code'|translate}}</th>
+                    <th>{{'Device name'|translate}}</th>
+                    <th>{{'Type'|translate}}</th>
+                    <th>{{'Location'|translate}}</th>
+                    <th>{{'IP Address'|translate}}</th>
+                    <th>{{'Body temperature scan'|translate}}</th>
+                    <th>{{'Status'|translate}}</th>
+                    <th>{{'Sync faceId'|translate}}</th>
+                    <th>{{'Restore data'|translate}}</th>
+                </tr>
+                <tr *ngFor="let device of listDevice; let i=index;">
+                    <td>
+                        <label class="checkbox">
+                            <input type="checkbox" [value]="device.id" [checked]="device.isChecked" (change)="onDeviceCheckedChange($event, device)"/>
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="checked">
+                                <rect width="20" height="20" rx="4" fill="#33AE47"/>
+                                <path d="M6 9.28571L9.13043 12.5L14.5 7" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+                            </svg>
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="unchecked">
+                                <rect x="0.75" y="0.75" width="18.5" height="18.5" rx="3.25" stroke="#33AE47" stroke-width="1.5"/>
+                            </svg>
+                        </label>
+                    </td>
+                    <td (click)="onOpenFormDialog(device.id)">{{itemPerPage * (currentPage - 1) + i + 1}}</td>
+                    <td (click)="onOpenFormDialog(device.id)">{{device.facesluice_id}}</td>
+                    <td (click)="onOpenFormDialog(device.id)">{{device.facesluice_name}}</td>
+                    <td (click)="onOpenFormDialog(device.id)">{{device.device_type === 1 ? 'Checkin' : (device.device_type === 2 ? 'Checkout' : 'Checkin/Checkout')}}</td>
+                    <td (click)="onOpenFormDialog(device.id)">
+                        <ng-container *ngFor="let location of listLocation">
+                            <span *ngIf="device.area_id===location.id">{{location.name}}</span>
+                        </ng-container>
+                    </td>
+                    <td (click)="onOpenFormDialog(device.id)">{{device.cloud_address}}</td>
+                    <td (click)="onOpenFormDialog(device.id)">{{device.is_temp ? 'Có' : 'Không'}}</td>
+                    <td (click)="onOpenFormDialog(device.id)">{{device.is_active ? 'Hoạt động' : 'Tạm ngừng'}}</td>
+                    <td>
+                        <button class="btn-sync" (click)="onSyncClick(device['id'])" [disabled]="isSyncClicked"></button>
+                    </td>
+                    <td>
+                        <button class="btn-restore" (click)="onRestoreClick(device['id'])"></button>
+                    </td>
+                </tr>
+                <tr *ngIf="!listDevice.length">
+                    <td [colSpan]="10" class="text-center">
+                        {{'No data'|translate}}
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div *ngIf="listDevice.length" class="pagination-container">
+            <g-pagination [page]="currentPage" [totalPages]="totalPages" (pageChange)="onPageChange($event)"></g-pagination>
+        </div>
+    </div>
+</div>
+<div class="dialog-loading" [ngStyle]="{'display': isLoading ? 'initial' : 'none'}">
+    <div class="dialog-loading-mask">
+        <mat-spinner></mat-spinner>
+        <p>{{'Loading...'|translate}}</p>
+    </div>
+</div>

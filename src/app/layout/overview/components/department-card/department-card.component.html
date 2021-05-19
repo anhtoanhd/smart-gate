@@ -1,0 +1,14 @@
+<div class="department-container" routerLink="{{route}}" [queryParams]="queryParams">
+    <div class="department-header">
+        <span class="department">{{'Department'|translate}}</span>
+        <span class="department-title" matTooltip="Bộ phận {{title}}">{{title|translate}}</span>
+    </div>
+    <div class="department-body">
+        <span class="department-att">{{'Late'|translate}}: <strong>{{lateValue}}</strong></span>
+        <span class="department-att">{{'Absent'|translate}}: <strong>{{absentValue}}</strong></span>
+        <span class="department-att">{{'Present'|translate}}: <strong>{{presentValue}}</strong></span>
+    </div>
+    <div class="department-footer">
+        <img src="assets/images/content/card/ic-detail.svg" alt="Detail">
+    </div>
+</div>

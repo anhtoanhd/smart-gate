@@ -1,0 +1,29 @@
+<div class="md-wrapper">
+    <div class="md-content">
+        <form name="form" (ngSubmit)="form.form.valid && onFormSubmit()" #form="ngForm"
+              novalidate>
+            <div class="md-header">
+                {{'Restore data'|translate}}
+            </div>
+            <div class="md-body">
+                <div class="custom-input-group">
+                    <label class="label-form">{{'Date range'|translate}}<span class="red-txt">*</span></label>
+                    <input
+                        type="text"
+                        class="date-picker custom-input"
+                        name="date-range"
+                        placeholder="dd/mm/yyyy - dd/mm/yyyy"
+                        [(ngModel)]="dateRange"
+                        [bsConfig]="{ isAnimated: true, showWeekNumbers: false, selectFromOtherMonth: true, dateInputFormat: 'DD/MM/YYYY'}"
+                        bsDaterangepicker
+                        readonly>
+                </div>
+            </div>
+            <div class="md-footer flex-center">
+                <g-button bgColor="#FF9C68" borderColor="#FF9C68"
+                          (click)="onCancelClick()">{{'Cancel'|translate}}</g-button>
+                <g-button type="submit" class="m-l-12" [disabled]="!dateRange.length || form.submitted">{{'Save'|translate}}</g-button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,19 @@
+@import "../../../../../styles/mixins";
+table {
+    width: 100%;
+    tr {
+        height: 35px;
+        th {
+            @include textStyle(normal, normal, 12px, 14px, #828282);
+            border-top: 1px solid #E0E1E0;
+            border-bottom: 1px solid #E0E1E0;
+        }
+        td {
+            @include textStyle(normal, normal, 12px, 14px, #333333);
+            border-bottom: 1px solid #E0E1E0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    }
+}

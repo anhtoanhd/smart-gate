@@ -1,0 +1,66 @@
+<div class="wrapper">
+    <div class="inner-left">
+        <img src="assets/images/auth/logo-white.png" alt="SmartGate Logo">
+    </div>
+    <div class="inner-right">
+        <div class="top-logo">
+            <img src="assets/images/auth/logo.png">
+            <h1>{{'Login to Smart Gate'|translate}} 1.0.0</h1>
+        </div>
+        <form name="form" (ngSubmit)="loginForm.form.valid && onLoginSubmit()" #loginForm="ngForm" novalidate>
+            <div class="form-group mb-4">
+                <label class="login-input-label">{{'Username or email'|translate}}</label>
+                <input
+                    type="text"
+                    name="username"
+                    #username="ngModel"
+                    [(ngModel)]="user['username']"
+                    placeholder="{{'Enter text'|translate}}"
+                    [ngClass]="{ 'is-invalid': loginForm.submitted && username.invalid }"
+                    maxlength="50"
+                    (input)="onFieldInput()"
+                    required/>
+                <div *ngIf="loginForm.submitted && username.invalid" class="text-danger">
+                    <div *ngIf="username.errors.required">{{'Enter username or email!'|translate}}</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="login-input-label">{{'Password'|translate}}</label>
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="{{'Enter text'|translate}}"
+                    #password="ngModel"
+                    [(ngModel)]="user['password']"
+                    [ngClass]="{ 'is-invalid': loginForm.submitted && password.invalid }"
+                    (input)="onFieldInput()"
+                    required="">
+                <div *ngIf="loginForm.submitted && password.invalid" class="text-danger">
+                    <div *ngIf="password.errors.required">{{'Enter password!'|translate}}</div>
+                </div>
+            </div>
+            <div class="d-flex space-between a-center m-t-12">
+                <label for="remember" class="checkbox fs14 mb-0">
+                    <input
+                        type="checkbox"
+                        name="remember"
+                        id="remember"
+                        [(ngModel)]="user['remember']">
+                    <svg class="checked" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="8" cy="8" r="8" fill="#2EC36E"/>
+                        <path d="M4.80078 7.42818L7.30513 9.99961L11.6008 5.59961" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                    <svg class="unchecked" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="8" cy="8" r="8" fill="#2EC36E"/>
+                    </svg>
+                    {{'Remember me'|translate}}
+                </label>
+                <label class="forgot-password" routerLink="/forgot-password">{{'Forgot password'|translate}}</label>
+            </div>
+            <span class="text-danger">{{message}}</span>
+            <button class="btn btn-login m-t-40">
+                {{'Login'|translate}}
+            </button>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,158 @@
+<div class="md-wrapper">
+    <div class="md-content">
+        <form name="form">
+            <div class="md-header">
+                {{'Add staff to shift'|translate}}
+            </div>
+            <div class="md-body">
+                <div class="shift-info-box">
+                    <div>
+                        <span class="online"></span>
+                        <span class="m-l-12">{{'Shift name'|translate}}: </span>
+                        <b class="m-l-12" style="max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{shift['name']}}</b>
+                    </div>
+                    <div>
+                        <span class="online"></span>
+                        <span class="m-l-12">{{'Location'|translate}}: </span>
+                        <b class="m-l-12" style="max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{area['name']}}</b>
+                    </div>
+                    <div>
+                        <span class="online"></span>
+                        <span class="m-l-12">{{'Shift time'|translate}}: </span>
+                        <b class="m-l-12">{{shift['time_start'].substr(0, 5)}} - {{shift['time_end'].substr(0, 5)}}</b>
+                    </div>
+                    <div>
+                        <span class="online"></span>
+                        <span class="m-l-12">{{'Date range'|translate}}: </span>
+                        <b class="m-l-12">{{commonService.formatDateVn(startDate)}}</b>
+                        &nbsp;-&nbsp;
+                        <b class="m-l-12" *ngIf="!editable">{{commonService.formatDateVn(endDate)}}</b>
+                        <input
+                            type="text"
+                            class="custom-input"
+                            style="width: 100px; background-color: #ffffff"
+                            *ngIf="editable"
+                            name="end-date"
+                            (ngModelChange)="onEndDateChange($event)"
+                            #datepicker="bsDatepicker"
+                            (onShown)="onDatepickerShown($event, datepicker)"
+                            placeholder="{{'Date'|translate}}"
+                            bsDatepicker readonly [(ngModel)]="endDate"
+                            [minDate]="today"
+                            [bsConfig]="{ isAnimated: true, showWeekNumbers: false, selectFromOtherMonth: true, dateInputFormat: 'DD/MM/YYYY'}">
+                    </div>
+                </div>
+                <div class="staff-wrap">
+                    <div style="margin-top: 10px;">
+                        <h6 class="text-uppercase">{{'On-shift staff'|translate}}</h6>
+                        <div class="staff-box">
+                            <div class="d-flex space-between">
+                                <div class="search-staff">
+                                    <input
+                                        name="inside-key"
+                                        type="text"
+                                        placeholder="{{'Search staff name'|translate}}"
+                                        [(ngModel)]="search['inside']"
+                                        (input)="onSearchInsideInput($event)"
+                                        (keyup.enter)="onSearchInsideClick()">
+                                </div>
+                                <ng-select
+                                    class="custom bg-white h-40px m-l-12"
+                                    style="width: 120px;"
+                                    name="inside-area"
+                                    bindLabel="name"
+                                    bindValue="id"
+                                    placeholder="{{'Location'|translate}}"
+                                    [clearable]="true"
+                                    [items]="areas"
+                                    [(ngModel)]="filter['inside_area']"
+                                    (change)="onInsideAreaChange()">
+                                </ng-select>
+                            </div>
+                            <div class="staff-shift-table m-t-16">
+                                <div class="staff-shift-table-head">
+                                    <div class="code">{{'Staff ID'|translate}}</div>
+                                    <div class="name">{{'Fullname'|translate}}</div>
+                                    <div class="department">{{'Department'|translate}}</div>
+                                    <div class="action"></div>
+                                </div>
+                                <div class="staff-shift-table-body" scrollTracker (scrollingFinished)="onLoadMoreInSideStaff()">
+                                    <div class="staff-item" *ngFor="let staff of listInsideStaff; let i = index;">
+                                        <div class="code" matTooltip="{{staff.user_idNumber}}">{{staff.user_idNumber}}</div>
+                                        <div class="name" matTooltip="{{staff.user_name}}">{{staff.user_name}}</div>
+                                        <div class="department" matTooltip="{{staff.department_name}}">{{staff.department_name}}</div>
+                                        <div class="action" matTooltip="{{'Remove'|translate}}">
+                                            <img src="assets/images/content/ic-minus.svg" alt="Remove staff"
+                                                 class="pointer" (click)="onRemoveStaffClick(staff)" *ngIf="now.getTime() < commonService.convertTimeStamp(startDate, shift['time_start']) && shift['is_activated']"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <h6 class="text-uppercase">{{'Off-shift staff'|translate}}</h6>
+                        <div class="staff-box">
+                            <div class="d-flex space-between">
+                                <div class="search-staff">
+                                    <input
+                                        name="outside-key"
+                                        type="text"
+                                        placeholder="{{'Search staff name'|translate}}"
+                                        [(ngModel)]="search['outside']"
+                                        (input)="onSearchOutsideInput($event)"
+                                        (keyup.enter)="onSearchOutsideClick()">
+                                </div>
+                                <ng-select
+                                    class="custom bg-white h-40px m-l-12"
+                                    style="width: 120px;"
+                                    name="outside-area"
+                                    bindLabel="name"
+                                    bindValue="id"
+                                    placeholder="{{'Location'|translate}}"
+                                    [items]="areas"
+                                    [clearable]="true"
+                                    [(ngModel)]="filter['outside_area']"
+                                    (change)="onOutsideAreaChange()">
+
+                                </ng-select>
+                            </div>
+                            <div class="staff-shift-table m-t-16">
+                                <div class="staff-shift-table-head">
+                                    <div class="code">{{'Staff ID'|translate}}</div>
+                                    <div class="name">{{'Fullname'|translate}}</div>
+                                    <div class="department">{{'Department'|translate}}</div>
+                                    <div class="action"></div>
+                                </div>
+                                <div class="staff-shift-table-body" scrollTracker (scrollingFinished)="onLoadMoreOutSideStaff()">
+                                    <div class="staff-item" *ngFor="let staff of listOutsideStaff; let i = index;">
+                                        <div class="code" matTooltip="{{staff.user_idNumber}}">{{staff.user_idNumber}}</div>
+                                        <div class="name" matTooltip="{{staff.user_name}}">{{staff.user_name}}</div>
+                                        <div class="department" matTooltip="{{staff.department_name}}">{{staff.department_name}}</div>
+                                        <div class="action" matTooltip="{{'Add'|translate}}">
+                                            <img src="assets/images/content/ic-add-small.svg" alt="Add staff"
+                                                 class="pointer" (click)="onAddStaffClick(staff)" *ngIf="now.getTime() < commonService.convertTimeStamp(startDate, shift['time_start']) && shift['is_activated']"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="md-footer flex-end">
+                <div>
+                    <g-button width="180" bgColor="#FF9C68" borderColor="#FF9C68" (click)="onCancelClick()">{{'Cancel'|translate}}</g-button>
+                    <g-button class="m-l-24" width="180" (click)="onSaveClick()"
+                              [disabled]="formSubmitted || (!selectedStaffs.length && !isEdit) || now.getTime() >= commonService.convertTimeStamp(startDate, shift['time_start'])">{{'Save'|translate}}</g-button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="dialog-loading" [ngStyle]="{'display': formSubmitted ? 'initial' : 'none'}">
+    <div class="dialog-loading-mask">
+        <mat-spinner></mat-spinner>
+        <p>{{'Loading...'|translate}}</p>
+    </div>
+</div>

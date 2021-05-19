@@ -1,0 +1,88 @@
+<div class="page-container scroll">
+    <div class="profile-container">
+        <div class="profile-header">
+            <div class="profile-img">
+                <img [src]="account.avatar ? account.avatar : 'assets/images/content/img-avatar.svg'" alt="">
+            </div>
+            <div class="profile-info">
+                <h3 class="profile-title">{{'Account information'|translate}}</h3>
+                <span>{{'Staff ID'|translate}}: {{account.id_number}}</span>
+            </div>
+        </div>
+        <div class="profile-content">
+            <form name="form" (ngSubmit)="accountForm.form.valid && onAccountFormSubmit()" #accountForm="ngForm" [mustMatch]="['password', 'repassword']" novalidate>
+                <div class="md-body--row">
+                    <div class="custom-input-group">
+                        <label class="label-form">{{'Fullname'|translate}}</label>
+                        <input type="text" class="custom-input" name="fullname" [(ngModel)]="account.name"
+                               placeholder="{{'Fullname'|translate}}" readonly>
+                    </div>
+                    <div class="custom-input-group">
+                        <label class="label-form">{{'Role'|translate}}</label>
+                        <ng-select class="custom" style="width: 100%;" [clearable]="false" [items]="roles"
+                                   name="role" #role="ngModel" bindLabel="name" bindValue="id" placeholder="{{'Role'|translate}}"
+                                   [(ngModel)]="account.role_id" disabled></ng-select>
+                    </div>
+                </div>
+                <div class="custom-input-group m-t-24">
+                    <label class="label-form">{{'Account'|translate}}</label>
+                    <input type="text" class="custom-input" name="username" [(ngModel)]="account.username"
+                           placeholder="{{'Account'|translate}}" readonly>
+                </div>
+                <div class="custom-input-group m-t-24">
+                    <label class="label-form">{{'Email'|translate}}</label>
+                    <input type="text" class="custom-input" name="email" [(ngModel)]="account.email"
+                           placeholder="{{'Email'|translate}}" readonly>
+                </div>
+                <div class="custom-input-group m-t-24">
+                    <label class="label-form">{{'Current password'|translate}}</label>
+                    <input type="password" class="custom-input" name="current_password" [(ngModel)]="account.old_password"
+                           placeholder="{{'Current password'|translate}}" min="8"
+                           [ngClass]="{ 'is-invalid': accountForm.submitted && resErrors['password']?.length }">
+                    <div *ngIf="accountForm.submitted && resErrors['password']?.length" class="invalid-feedback">
+                        <div *ngFor="let e of resErrors['password']">{{e}}</div>
+                    </div>
+                </div>
+                <div class="custom-input-group m-t-24">
+                    <label class="label-form">{{'New password'|translate}}</label>
+                    <input type="password" class="custom-input" name="password" [(ngModel)]="account.new_password"
+                           placeholder="{{'New password'|translate}}" maxlength="20" #newPassword="ngModel"
+                           pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*]).{8,}$"
+                           [ngClass]="{ 'is-invalid': accountForm.submitted && (newPassword.invalid || resErrors['new_password']?.length) }" >
+                    <div *ngIf="accountForm.submitted && newPassword.invalid" class="invalid-feedback">
+                        <div *ngIf="newPassword.errors.pattern">
+                            <ul>
+                                <li>{{'Password must be at least 8 characters'|translate}}</li>
+                                <li>{{'Password at least one lowercase letter (a-z)'|translate}}</li>
+                                <li>{{'Password at least one uppercase character (A-Z)'|translate}}</li>
+                                <li>{{'Password at least one number (0-9)'|translate}}</li>
+                                <li>{{'Password at least one special character (! @ # $% ^ &)'|translate}}</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div *ngIf="resErrors['new_password']?.length" class="invalid-feedback">
+                        <div *ngFor="let e of resErrors['new_password']">{{e}}</div>
+                    </div>
+                </div>
+                <div class="custom-input-group m-t-24">
+                    <label class="label-form">{{'Re-Password'|translate}}</label>
+                    <input type="password" class="custom-input" name="repassword" [(ngModel)]="account.re_password"
+                           placeholder="{{'Re-Password'|translate}}" #repassword="ngModel"
+                           [ngClass]="{ 'is-invalid': accountForm.submitted && repassword.invalid }">
+                    <div *ngIf="accountForm.submitted && repassword.invalid" class="invalid-feedback">
+                        <div *ngIf="repassword.errors.mustMatch">{{'Re-Passwords must match password'|translate}}</div>
+                    </div>
+                </div>
+                <div class="d-flex flex-center m-t-32">
+                    <g-button type="submit" width="250" bgColor="#FF9C68" borderColor="#FF9C68" bgImage="ic-change.svg">{{'Update account'|translate}}</g-button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="dialog-loading" [ngStyle]="{'display': isLoading ? 'initial' : 'none'}">
+    <div class="dialog-loading-mask">
+        <mat-spinner></mat-spinner>
+        <p>{{'Loading...'|translate}}</p>
+    </div>
+</div>

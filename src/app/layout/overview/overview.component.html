@@ -1,0 +1,146 @@
+<div class="page-container scroll">
+    <div class="page-content p-t-24">
+        <div class="page-header-title">
+            {{'Human resources statistics'|translate}}
+        </div>
+        <span class="today">{{weekDay[today.getDay()]|translate}}, {{today.getDate()}}/{{today.getMonth() + 1}}/{{today.getFullYear()}}</span>
+        <div class="overview-tab-container">
+            <div class="overview-tab-header">
+                <div class="overview-tab-item" (click)="onTabChange('back_office')" [ngClass]="{'active': tab==='back_office'}">
+                    {{'Human resources office block statistics'|translate}}
+                </div>
+                <div class="overview-tab-item" (click)="onTabChange('shift_office')" [ngClass]="{'active': tab==='shift_office'}">
+                    {{'Human resources shift block statistics'|translate}}
+                </div>
+            </div>
+            <div class="d-flex flex-end">
+                <ng-select
+                    class="custom shadow bg-white m-t-16 m-b-12"
+                    style="width: 150px;"
+                    [items]="listShift"
+                    bindLabel="name"
+                    bindValue="id"
+                    placeholder="{{'Choose shift'|translate}}"
+                    [clearable]="false"
+                    [searchable]="false"
+                    [(ngModel)]="filter['shift']"
+                    (change)="onShiftChange()"
+                    notFoundText="{{'No items found'|translate}}">
+                </ng-select>
+            </div>
+            <div class="overview-tab-content">
+                <div class="overview-top">
+                    <div class="overview-top--item">
+                        <app-top-card [bgClass]="'staff'" [header]="'Total staff'" [count]="dayData.total_user ? dayData.total_user : '0'"></app-top-card>
+                    </div>
+                    <div class="overview-top--item">
+                        <app-top-card [bgClass]="'present'" [header]="'Present'" [count]="dayData.user_on ? dayData.user_on : '0'"></app-top-card>
+                    </div>
+                    <div class="overview-top--item">
+                        <app-top-card [bgClass]="'absent'" [header]="'Absent'" [count]="dayData.user_not ? dayData.user_not : '0'"></app-top-card>
+                    </div>
+                    <div class="overview-top--item">
+                        <app-top-card [bgClass]="'late'" [header]="'Late'" [count]="dayData.user_late ? dayData.user_late : '0'"></app-top-card>
+                    </div>
+                </div>
+                <div class="overview-chart">
+                    <div class="today-chart">
+                        <app-chart [data]="chartData"></app-chart>
+                    </div>
+                    <div class="today-info">
+                        <div class="today-info--table">
+                            <app-today-table [data]="absentData" [showTime]="false" [type]="'absent'" [route]="'/hr-report'" [queryParams]="{type: 'absent'}"></app-today-table>
+                        </div>
+                        <div class="today-info--table">
+                            <app-today-table [data]="lateData" [showTime]="true" [type]="'late'" [route]="'/hr-report'" [queryParams]="{type: 'late'}"></app-today-table>
+                        </div>
+                    </div>
+                </div>
+                <div class="overview-department">
+                    <div class="overview-department-item" *ngFor="let department of departmentData">
+                        <app-department-card [title]="department.department_name ? department.department_name : 'Bộ phận khác'"
+                                             [lateValue]="department.user_late" [absentValue]="department.user_not" [presentValue]="department.user_on"
+                                             [route]="'/hr-report'" [queryParams]="{department: department.department_id}"></app-department-card>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <ng-container *ngIf="healthyData.length">
+            <div class="page-header-title">
+                {{'Staff healthy'|translate}}
+            </div>
+            <div class="overview-healthy">
+                <p class="healthy-title">{{'Notify'|translate}}</p>
+                <p>{{'Number of employees with abnormal temperature'|translate}}: <strong>10/160</strong></p>
+                <p>{{'Today, some of your employees are not healthy'|translate}}</p>
+            </div>
+            <div class="header--title m-t-24">
+                {{'You may need to pay attention to the following staff members'|translate}}
+            </div>
+            <table class="custom-table m-t-16">
+                <tr>
+                    <th>{{'No.'|translate}}</th>
+                    <th>{{'Avatar'|translate}}</th>
+                    <th>{{'Fullname'|translate}}</th>
+                    <th>{{'Staff ID'|translate}}</th>
+                    <th>{{'Department'|translate}}</th>
+                    <th>{{'Temperature'|translate}}</th>
+                </tr>
+                <tr>
+                    <td>01</td>
+                    <td><img src="assets/images/content/img-avatar.svg" alt="Avatar"></td>
+                    <td>Nguyễn Quốc Hiệu</td>
+                    <td>ABN12012301</td>
+                    <td>Product</td>
+                    <td>38 độ</td>
+                </tr>
+                <tr>
+                    <td>01</td>
+                    <td><img src="assets/images/content/img-avatar.svg" alt="Avatar"></td>
+                    <td>Nguyễn Quốc Hiệu</td>
+                    <td>ABN12012301</td>
+                    <td>Product</td>
+                    <td>38 độ</td>
+                </tr>
+                <tr>
+                    <td>01</td>
+                    <td><img src="assets/images/content/img-avatar.svg" alt="Avatar"></td>
+                    <td>Nguyễn Quốc Hiệu</td>
+                    <td>ABN12012301</td>
+                    <td>Product</td>
+                    <td>38 độ</td>
+                </tr>
+                <tr>
+                    <td>01</td>
+                    <td><img src="assets/images/content/img-avatar.svg" alt="Avatar"></td>
+                    <td>Nguyễn Quốc Hiệu</td>
+                    <td>ABN12012301</td>
+                    <td>Product</td>
+                    <td>38 độ</td>
+                </tr>
+                <tr>
+                    <td>01</td>
+                    <td><img src="assets/images/content/img-avatar.svg" alt="Avatar"></td>
+                    <td>Nguyễn Quốc Hiệu</td>
+                    <td>ABN12012301</td>
+                    <td>Product</td>
+                    <td>38 độ</td>
+                </tr>
+                <tr>
+                    <td>01</td>
+                    <td><img src="assets/images/content/img-avatar.svg" alt="Avatar"></td>
+                    <td>Nguyễn Quốc Hiệu</td>
+                    <td>ABN12012301</td>
+                    <td>Product</td>
+                    <td>38 độ</td>
+                </tr>
+            </table>
+        </ng-container>
+    </div>
+</div>
+<div class="dialog-loading" [ngStyle]="{'display': isLoading ? 'initial' : 'none'}">
+    <div class="dialog-loading-mask">
+        <mat-spinner></mat-spinner>
+        <p>{{'Loading...'|translate}}</p>
+    </div>
+</div>

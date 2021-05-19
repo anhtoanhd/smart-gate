@@ -1,0 +1,24 @@
+.g-btn {
+    border-radius: 100px;
+    border: 1px solid transparent;
+    box-sizing: border-box;
+    line-height: 1.7 !important;
+
+    &:hover {
+        cursor: pointer;
+    }
+
+    &:active {
+        box-shadow: inset -3px 1px 6px rgba(0, 0, 0, 0.35);
+    }
+
+    &[disabled] {
+        background-color: #EEEEEE !important;
+        border-color: #EEEEEE !important;
+        color: #828282 !important;
+    }
+
+    &.none-shadow {
+        box-shadow: none;
+    }
+}

@@ -1,0 +1,211 @@
+<div class="page-container">
+    <div class="page-head">
+        <g-search
+            placeholder="{{'Enter staff name or code'|translate}}"
+            (searchInputChange)="onSearchInputChange($event)">
+        </g-search>
+        <div class="page-filter">
+            <div class="d-flex flex-start">
+                <div class="page-filter-group">
+                    <div class="page-filter-title">{{'Department'|translate}}</div>
+                    <div class="btn-group" dropdown [insideClick]="true">
+                        <span class="caret bg-text"
+                              dropdownToggle>{{filter['departments']?.length ? commonService.joinField(filter['departments'], 'name') : 'Tất cả'}}</span>
+                        <div *dropdownMenu class="dropdown-menu" style="padding: 0;" role="menu">
+                            <div class="filter-group-container">
+                                <div class="search-box m-b-16">
+                                    <span class="search-icon"></span>
+                                    <span class="vertical-divider"></span>
+                                    <input type="text" class="search-input" placeholder="{{'Enter keyword'|translate}}"
+                                           (keyup)="onDepartmentSearch($event)">
+                                </div>
+                                <div class="wrap">
+                                    <label class="checkbox space-between" *ngFor="let department of listDepartment">
+                                        <span>{{department.name}}</span>
+                                        <input type="checkbox" [checked]="department.isChecked"
+                                               (change)="onDepartmentChange($event, department)"/>
+                                        <img src="assets/images/content/checkbox-unchecked.svg" class="unchecked">
+                                        <img src="assets/images/content/checkbox-checked.svg" class="checked">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="page-filter-group m-l-32">
+                    <div class="page-filter-title">{{'Location'|translate}}</div>
+                    <div class="btn-group" dropdown [insideClick]="true">
+                        <span class="caret bg-text"
+                              dropdownToggle>{{filter['areas']?.length ? commonService.joinField(filter['areas'], 'name') : 'Tất cả'}}</span>
+                        <div *dropdownMenu class="dropdown-menu" style="padding: 0;" role="menu">
+                            <div class="filter-group-container">
+                                <div class="search-box m-b-16">
+                                    <span class="search-icon"></span>
+                                    <span class="vertical-divider"></span>
+                                    <input type="text" class="search-input" placeholder="{{'Enter keyword'|translate}}"
+                                           (keyup)="onLocationSearch($event)">
+                                </div>
+                                <div class="wrap">
+                                    <label class="checkbox space-between" *ngFor="let area of listLocation">
+                                        <span>{{area.name}}</span>
+                                        <input type="checkbox" [checked]="area.isChecked"
+                                               (change)="onLocationChange($event, area)"/>
+                                        <img src="assets/images/content/checkbox-unchecked.svg" class="unchecked">
+                                        <img src="assets/images/content/checkbox-checked.svg" class="checked">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="page-filter-group m-l-32">
+                    <div class="page-filter-title">{{'Work time range'|translate}}</div>
+                    <div class="btn-group" dropdown [insideClick]="true">
+                        <span class="caret bg-text"
+                              dropdownToggle>{{filter['date_range']?.length ? commonService.joinField(filter['date_range'], null, ' - ') : 'Tất cả'}}</span>
+                        <div *dropdownMenu class="dropdown-menu" style="padding: 0;" role="menu">
+                            <div class="filter-group-container date-range" style="padding-top: 0;">
+                                <bs-daterangepicker-inline
+                                    [(bsValue)]="filter['date_range']"
+                                    (bsValueChange)="onChooseDateRange($event)"
+                                    [bsConfig]="bsConfig">
+                                </bs-daterangepicker-inline>
+                                <div class="d-flex flex-end m-t-16">
+                                    <span style="color: #2FA8DD; text-decoration: underline; cursor: pointer;"
+                                          (click)="filter['date_range']=null"
+                                          *ngIf="filter['date_range']">Clear All</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="page-filter-group m-l-32">
+                    <div class="page-filter-title">{{'Office type'|translate}}</div>
+                    <div class="btn-group" dropdown [insideClick]="true">
+                        <span class="caret bg-text"
+                              dropdownToggle>{{filter['offices'] ? filter['offices'].name : 'Tất cả'}}</span>
+                        <div *dropdownMenu class="dropdown-menu" style="padding: 0;" role="menu">
+                            <div class="filter-group-container">
+                                <div class="wrap">
+                                    <label class="checkbox space-between" *ngFor="let office of listOffice">
+                                        <span>{{office.name}}</span>
+                                        <input name="office" type="radio" [checked]="office.isChecked"
+                                               (change)="onOfficeChange($event, office)"/>
+                                        <img src="assets/images/content/radio-unchecked.svg" class="unchecked">
+                                        <img src="assets/images/content/radio-checked.svg" class="checked">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <span class="reset" (click)="onResetFilterClick()">Reset</span>
+        </div>
+    </div>
+    <div class="page-content">
+        <div class="d-flex space-between m-b-12">
+            <div class="d-flex flex-start">
+                <span class="btn-span plus" (click)="openFormDialog(0)">{{'Add staff'|translate}}</span>
+                <span class="btn-span delete m-l-36" [ngClass]="{'disable': !selectedStaffs.length}"
+                      (click)="onDeleteClick()">{{'Delete'|translate}}</span>
+                <span
+                    class="btn-span combine m-l-36"
+                    [ngClass]="{'disable': !selectedStaffs.length}"
+                    (click)="onCombineClick()"
+                    *ngIf="filter['offices']?.value==='none'">
+                    {{'Combine into block'|translate}}
+                </span>
+            </div>
+            <div class="d-flex flex-start">
+                <span class="btn-span export" (click)="onExportClick()">{{'Export'|translate}}</span>
+                <span class="btn-span import m-l-32" (click)="file.click()">
+                    {{'Import'|translate}}
+                    <input type="file" hidden id="import" #file accept=".xlsx,.xls" (change)="onImportChange($event)">
+                </span>
+                <span class="btn-span download m-l-32" (click)="onDownloadClick()">{{'Mẫu nhập liệu'|translate}}</span>
+                <span class="btn-span setting m-l-32" (click)="onAdvancedSettingClick()">{{'Setting'|translate}}</span>
+            </div>
+        </div>
+        <div class="table-container">
+            <table class="custom-table tr-pointer">
+                <tr>
+                    <th>
+                        <label class="checkbox">
+                            <input type="checkbox" (change)="onSelectAll($event)"
+                                   [checked]="selectedStaffs.length===listIsEditStaff.length && selectedStaffs.length > 0"/>
+                            <img src="assets/images/content/checkbox-unchecked.svg" class="unchecked">
+                            <img src="assets/images/content/checkbox-checked.svg" class="checked">
+                        </label>
+                    </th>
+                    <th>{{'No.'|translate}}</th>
+                    <th>{{'Staff ID'|translate}}</th>
+                    <th>{{'Avatar'|translate}}</th>
+                    <th>{{'Fullname'|translate}}</th>
+                    <th>{{'Department'|translate}}</th>
+                    <th>{{'Location'|translate}}</th>
+                    <th>{{'Start date'|translate}}</th>
+                    <th>{{'End date'|translate}}</th>
+                    <th>{{'Active'|translate}}</th>
+                </tr>
+                <tr *ngFor="let staff of listStaff; let i=index;">
+                    <td>
+                        <label class="checkbox" *ngIf="staff['is_edit']">
+                            <input type="checkbox" [value]="staff.id" [checked]="staff.isChecked"
+                                   (change)="onStaffCheckedChange($event, staff)"/>
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg" class="checked">
+                                <rect width="20" height="20" rx="4" fill="#33AE47"/>
+                                <path d="M6 9.28571L9.13043 12.5L14.5 7" stroke="white" stroke-width="1.5"
+                                      stroke-linecap="round"/>
+                            </svg>
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg" class="unchecked">
+                                <rect x="0.75" y="0.75" width="18.5" height="18.5" rx="3.25" stroke="#33AE47"
+                                      stroke-width="1.5"/>
+                            </svg>
+                        </label>
+                        <img src="assets/images/content/checkbox-unchecked-disable.svg" alt="Disable"
+                             *ngIf="!staff['is_edit']">
+                    </td>
+                    <td (click)="openFormDialog(staff.id)">{{itemPerPage * (currentPage - 1) + i + 1}}</td>
+                    <td (click)="openFormDialog(staff.id)">{{staff.id_number}}</td>
+                    <td (click)="openFormDialog(staff.id)"><img class="avatar"
+                                                                [src]="staff.avatar ? staff.avatar : '../assets/images/content/img-avatar.svg'"
+                                                                alt="Avatar"></td>
+                    <td (click)="openFormDialog(staff.id)">{{staff.name}}</td>
+                    <td (click)="openFormDialog(staff.id)">{{staff.department_name ? staff.department_name : 'Bộ phận khác'}}</td>
+                    <td (click)="openFormDialog(staff.id)">{{staff.area_name ? staff.area_name : 'Khu vực khác'}}</td>
+                    <td (click)="openFormDialog(staff.id)">{{staff.date_start_at ? commonService.formatDateVn(staff.date_start_at) : ''}}</td>
+                    <td (click)="openFormDialog(staff.id)">{{staff.date_end_at ? commonService.formatDateVn(staff.date_end_at) : ''}}</td>
+                    <td>
+                        <label class="checkbox"
+                               (click)="onActiveClick(staff['is_activated'], staff['id'], staff['is_edit'], staff['avatar'])">
+                            <input type="checkbox" [(ngModel)]="staff.is_activated" disabled/>
+                            <img src="assets/images/content/switch-off.svg" class="unchecked">
+                            <img src="assets/images/content/switch-on.svg" class="checked">
+                        </label>
+                    </td>
+                </tr>
+                <tr *ngIf="!listStaff.length">
+                    <td [colSpan]="9" class="text-center">
+                        {{'No data'|translate}}
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div *ngIf="listStaff.length" class="pagination-container">
+            <g-pagination [page]="currentPage" [totalPages]="totalPages"
+                          (pageChange)="onPageChange($event)"></g-pagination>
+        </div>
+    </div>
+</div>
+<div class="dialog-loading" [ngStyle]="{'display': isLoading ? 'initial' : 'none'}">
+    <div class="dialog-loading-mask">
+        <mat-spinner></mat-spinner>
+        <p>{{'Loading...'|translate}}</p>
+    </div>
+</div>

@@ -1,0 +1,16 @@
+/* You can add global styles to this file, and also import other style files */
+@import "bootstrap/bootstrap";
+@import "spinner";
+@import "utils";
+@import "rtl";
+@import "~ngx-toastr/toastr";
+@import "~ngx-toastr/toastr-bs4-alert";
+@import "style";
+@import "responsive";
+@import "~@ng-select/ng-select/themes/default.theme.css";
+
+@media print {
+    .breadcrumb {
+        display: none !important;
+    }
+}

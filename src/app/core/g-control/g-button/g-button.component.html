@@ -1,0 +1,8 @@
+<button [type]="type"
+        [ngClass]="['g-btn', className]"
+        [ngStyle]="style"
+        [disabled]="disabled"
+        (mouseover)="onMouseOver()"
+        (mouseout)="onMouseOut()">
+        <ng-content></ng-content>
+</button>

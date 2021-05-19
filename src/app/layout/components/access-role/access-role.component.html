@@ -1,0 +1,50 @@
+<div class="md-wrapper">
+    <div class="md-content">
+        <div class="md-header">
+            {{'Decentralized account access'|translate}}
+            <img src="assets/images/content/ic-close.svg" alt="Close" class="close-dialog" (click)="onClose()">
+        </div>
+        <div class="md-body">
+            <table class="custom-table access-role">
+                <tr>
+                    <th>{{'Role'|translate}}</th>
+                    <th *ngFor="let role of listRole">{{role.name}}</th>
+                </tr>
+                <tr *ngFor="let permission of listPermission">
+                    <td>{{permission.name}}</td>
+                    <td *ngFor="let role of listRole">
+                        <ng-container *ngIf="role.id !== 1">
+                            <img src="assets/images/content/tick.svg" alt="Tick"
+                                 *ngIf="!isEdit && responseRole[permission.id]?.includes(role.id)">
+                            <label class="checkbox" *ngIf="isEdit">
+                                <input type="checkbox" (change)="onCheckedChange($event, permission, role.id)"
+                                       [checked]="responseRole[permission.id]?.includes(role.id)"/>
+                                <img src="assets/images/content/checkbox-unchecked.svg" class="unchecked">
+                                <img src="assets/images/content/checkbox-checked.svg" class="checked">
+                            </label>
+                        </ng-container>
+                        <ng-container *ngIf="role.id === 1">
+                            <img src="assets/images/content/tick-disable.svg" alt="Tick-Disable" *ngIf="!isEdit">
+                            <img src="assets/images/content/checkbox-checked-disable.svg" alt="Checkbox-disable"
+                                 *ngIf="isEdit">
+                        </ng-container>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="md-footer space-between">
+            <div>
+                <g-button bgColor="#FF9C68" borderColor="#FF9C68" bgImage="ic-edit.svg" *ngIf="!isEdit" (click)="isEdit = true;">{{'Edit'|translate}}</g-button>
+            </div>
+            <div>
+                <g-button bgColor="#0E9560" borderColor="#0E9560" *ngIf="isEdit" (click)="onSaveClick();">{{'Save'|translate}}</g-button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="dialog-loading" [ngStyle]="{'display': formSubmitted ? 'initial' : 'none'}">
+    <div class="dialog-loading-mask">
+        <mat-spinner></mat-spinner>
+        <p>{{'Loading...'|translate}}</p>
+    </div>
+</div>

@@ -1,0 +1,117 @@
+<div class="md-wrapper">
+    <div class="md-content">
+        <form name="form" (ngSubmit)="settingForm.form.valid && onSettingFormSubmit()" #settingForm="ngForm">
+            <div class="md-header">
+                {{'Staff advance setting'|translate}}
+            </div>
+            <div class="md-body">
+                <div class="d-flex flex-start">
+                    <label class="label-form mb-0">{{'Create staff code'|translate}}</label>
+                    <label class="radio disabled m-l-40">
+                        <input type="radio" name="type" value="manual" [(ngModel)]="setting['type']" disabled/>
+                        <img src="assets/images/content/radio-unchecked-disable.svg" class="unchecked">
+                        <img src="assets/images/content/radio-checked.svg" class="checked">
+                        {{'Manual'|translate}}
+                    </label>
+                    <label class="radio m-l-40">
+                        <input type="radio" name="type" value="auto" [(ngModel)]="setting['type']"/>
+                        <img src="assets/images/content/radio-unchecked.svg" class="unchecked">
+                        <img src="assets/images/content/radio-checked.svg" class="checked">
+                        {{'Auto'|translate}}
+                    </label>
+                </div>
+                <div class="d-flex space-between m-t-24" style="align-items: flex-start;">
+                    <label class="checkbox" style="margin-top: 6px;">
+                        <input type="checkbox" name="prefix" [(ngModel)]="setting['prefix']" disabled/>
+                        <img src="assets/images/content/checkbox-unchecked-disable.svg" class="unchecked">
+                        <img src="assets/images/content/checkbox-checked-disable.svg" class="checked">
+                        {{'Use prefix'|translate}}<span class="red-txt" style="width: auto;">*</span>
+                    </label>
+                    <div class="m-l-40" style="flex-grow: 1;" >
+                        <input
+                            type="text"
+                            class="custom-input w-100"
+                            [(ngModel)]="setting['use_first']"
+                            name="use-first"
+                            #useFirst="ngModel"
+                            maxlength="5"
+                            [pattern]="codePattern"
+                            [ngClass]="{'is-invalid': settingForm.submitted && useFirst.invalid}"
+                            placeholder="{{'Enter prefix (staff or company code)'|translate}}"
+                            [required]="setting['prefix']">
+                        <div *ngIf="settingForm.submitted && useFirst.invalid" class="invalid-feedback">
+                            <div *ngIf="useFirst.errors.required">{{'This field is required'|translate}}</div>
+                            <div *ngIf="useFirst.errors.pattern">{{'Start by A-z or a-z, include A-Z, a-z, 0-9, _, -!'|translate}}</div>
+                            <div *ngIf="useFirst.errors.maxLength">{{'Maximum 5 characters!'|translate}}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <label class="checkbox m-t-24">
+                    <input type="checkbox" name="area" [(ngModel)]="setting['code_area']"/>
+                    <img src="assets/images/content/checkbox-unchecked.svg" class="unchecked">
+                    <img src="assets/images/content/checkbox-checked.svg" class="checked">
+                    {{'Use area code'|translate}}
+                </label>
+
+                <label class="checkbox m-t-24">
+                    <input type="checkbox" name="departement" [(ngModel)]="setting['code_department']"/>
+                    <img src="assets/images/content/checkbox-unchecked.svg" class="unchecked">
+                    <img src="assets/images/content/checkbox-checked.svg" class="checked">
+                    {{'Use department code'|translate}}
+                </label>
+
+                <label class="checkbox m-t-24">
+                    <input type="checkbox" name="auto-change" [(ngModel)]="setting['auto_change']"/>
+                    <img src="assets/images/content/checkbox-unchecked.svg" class="unchecked">
+                    <img src="assets/images/content/checkbox-checked.svg" class="checked">
+                    {{'Auto change staff code when change department or area'|translate}}
+                </label>
+
+                <label class="checkbox m-t-24">
+                    <input type="checkbox" name="order-new" [(ngModel)]="setting['order_by_new_area']"/>
+                    <img src="assets/images/content/checkbox-unchecked.svg" class="unchecked">
+                    <img src="assets/images/content/checkbox-checked.svg" class="checked">
+                    {{'The employee number runs from the beginning for each area'|translate}}
+                </label>
+
+                <label class="label-form m-t-40">{{'Staff code auto generate'|translate}}</label>
+
+                <div class="md-body--row m-t-24">
+                    <label class="radio">
+                        <input type="radio" name="form" value="3" [(ngModel)]="setting['data_types']"/>
+                        <img src="assets/images/content/radio-unchecked.svg" class="unchecked">
+                        <img src="assets/images/content/radio-checked.svg" class="checked">
+                        {{'Form'|translate}} 1: ADTHCMPR00005
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="form" value="1" [(ngModel)]="setting['data_types']"/>
+                        <img src="assets/images/content/radio-unchecked.svg" class="unchecked">
+                        <img src="assets/images/content/radio-checked.svg" class="checked">
+                        {{'Form'|translate}}2: ADT-HCM-PR-00005
+                    </label>
+                </div>
+                <div class="md-body--row m-t-24">
+                    <label class="radio">
+                        <input type="radio" name="form" value="2" [(ngModel)]="setting['data_types']"/>
+                        <img src="assets/images/content/radio-unchecked.svg" class="unchecked">
+                        <img src="assets/images/content/radio-checked.svg" class="checked">
+                        {{'Form'|translate}} 3: ADT_HCM_PR_00005
+                    </label>
+                </div>
+            </div>
+            <div class="md-footer flex-end">
+                <div>
+                    <g-button width="180" bgColor="#FF9C68" borderColor="#FF9C68" (click)="onCancelClick()">{{'Cancel'|translate}}</g-button>
+                    <g-button type="submit" class="m-l-24" width="180" [disabled]="formSubmitted">{{'Save'|translate}}</g-button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="dialog-loading" [ngStyle]="{'display': formSubmitted ? 'initial' : 'none'}">
+    <div class="dialog-loading-mask">
+        <mat-spinner></mat-spinner>
+        <p>{{'Loading...'|translate}}</p>
+    </div>
+</div>
